@@ -9,6 +9,21 @@ import React, { useState, useEffect, useRef } from "react";
 
 // 1. Dark Rain Effect
 function RainEffect() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    if (isMobile) return (
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-20">
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 brightness-50"></div>
+        </div>
+    );
+
     return (
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30">
             {/* Rain Layers using refined CSS gradients */}
@@ -41,8 +56,14 @@ function RainEffect() {
 // 2. Thunder Flash Effect (Subtle Lightning)
 function ThunderEffect() {
     const [flash, setFlash] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+
+        if (window.innerWidth < 768) return;
+
         const triggerThunder = () => {
             // Random delay between 5 to 15 seconds
             const delay = Math.random() * 10000 + 5000;
@@ -55,8 +76,14 @@ function ThunderEffect() {
         };
 
         const timerId = triggerThunder();
-        return () => clearTimeout(timerId);
+        window.addEventListener('resize', checkMobile);
+        return () => {
+            clearTimeout(timerId);
+            window.removeEventListener('resize', checkMobile);
+        };
     }, []);
+
+    if (isMobile) return null;
 
     return (
         <motion.div
@@ -69,10 +96,19 @@ function ThunderEffect() {
 
 // 3. Low Health Vignette (Pulsing Red Edges)
 function VignetteEffect() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     return (
         <motion.div
-            animate={{ opacity: [0.4, 0.7, 0.4] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            animate={isMobile ? { opacity: 0.5 } : { opacity: [0.4, 0.7, 0.4] }}
+            transition={isMobile ? { duration: 0 } : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
             className="absolute inset-0 z-10 pointer-events-none"
             style={{
                 background: "radial-gradient(circle at center, transparent 0%, transparent 60%, rgba(50, 0, 0, 0.4) 100%)"
@@ -117,53 +153,72 @@ function TypewriterText({ text, delay = 0 }: { text: string, delay?: number }) {
 // 3. Glitch Image Component (Shared Aesthetic)
 function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHovered: boolean }) {
     const [delays, setDelays] = React.useState({ d1: 0, d2: 0 });
+    const [isMobile, setIsMobile] = useState(false);
 
     React.useEffect(() => {
         setDelays({
             d1: Math.random() * 0.5,
             d2: Math.random() * 0.5
         });
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     return (
         <div className="relative w-full h-full">
-            {/* Cyan Channel - Glitch Layer 1 */}
-            <motion.div
-                animate={isHovered ? {
-                    x: [-2, 2, -1, 0, 2],
-                    y: [1, -1, 0, 2, -1],
-                    opacity: [0.5, 0.8, 0.5]
-                } : { x: 0, y: 0, opacity: 0 }}
-                transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d1 }}
-                className="absolute inset-0 z-0 mix-blend-screen opacity-0"
-            >
-                <div className="relative w-full h-full bg-cyan-900/50"> {/* Tint */}
-                    <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
-                </div>
-            </motion.div>
+            {/* Cyan Channel - Glitch Layer 1 - Desktop Only */}
+            {!isMobile && (
+                <motion.div
+                    animate={isHovered ? {
+                        x: [-2, 2, -1, 0, 2],
+                        y: [1, -1, 0, 2, -1],
+                        opacity: [0.5, 0.8, 0.5]
+                    } : { x: 0, y: 0, opacity: 0 }}
+                    transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d1 }}
+                    className="absolute inset-0 z-0 mix-blend-screen opacity-0"
+                >
+                    <div className="relative w-full h-full bg-cyan-900/50"> {/* Tint */}
+                        <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
+                    </div>
+                </motion.div>
+            )}
 
-            {/* Red Channel - Glitch Layer 2 */}
-            <motion.div
-                animate={isHovered ? {
-                    x: [2, -2, 1, 0, -2],
-                    y: [-1, 1, 0, -2, 1],
-                    opacity: [0.5, 0.8, 0.5]
-                } : { x: 0, y: 0, opacity: 0 }}
-                transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d2 }}
-                className="absolute inset-0 z-0 mix-blend-screen opacity-0"
-            >
-                <div className="relative w-full h-full bg-red-900/50"> {/* Tint */}
-                    <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
-                </div>
-            </motion.div>
+            {/* Red Channel - Glitch Layer 2 - Desktop Only */}
+            {!isMobile && (
+                <motion.div
+                    animate={isHovered ? {
+                        x: [2, -2, 1, 0, -2],
+                        y: [-1, 1, 0, -2, 1],
+                        opacity: [0.5, 0.8, 0.5]
+                    } : { x: 0, y: 0, opacity: 0 }}
+                    transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d2 }}
+                    className="absolute inset-0 z-0 mix-blend-screen opacity-0"
+                >
+                    <div className="relative w-full h-full bg-red-900/50"> {/* Tint */}
+                        <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
+                    </div>
+                </motion.div>
+            )}
 
             {/* Main Image */}
             <Image
                 src={src}
                 alt={alt}
                 fill
-                className={`object-cover relative z-10 transform transition-transform duration-1000 ${isHovered ? 'saturate-100 scale-110' : 'saturate-0 scale-100'}`}
+                quality={isMobile ? 75 : 85}
+                className={`object-cover relative z-10 transform transition-transform duration-1000 ${isHovered ? 'saturate-100 scale-110' : 'saturate-0 scale-100'} ${isMobile && isHovered ? 'animate-pulse' : ''}`}
             />
+
+            {/* Simple Mobile Jitter Effect Override */}
+            {isMobile && isHovered && (
+                <motion.div
+                    animate={{ x: [-1, 1, -1], y: [1, -1, 1] }}
+                    transition={{ duration: 0.1, repeat: Infinity }}
+                    className="absolute inset-0 z-20 pointer-events-none border-2 border-red-500/20"
+                />
+            )}
         </div>
     );
 }
@@ -203,7 +258,7 @@ function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass,
 
                 <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} />
 
-                <div className="absolute top-4 left-4 z-20 bg-black/40 backdrop-blur-md p-2 rounded-lg border border-white/5">
+                <div className="absolute top-4 left-4 z-20 bg-black/60 md:bg-black/40 md:backdrop-blur-md p-2 rounded-lg border border-white/10 md:border-white/5">
                     <Icon className={`w-5 h-5 ${iconColorClass}`} />
                 </div>
             </div>
