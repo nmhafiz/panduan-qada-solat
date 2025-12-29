@@ -1,120 +1,12 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { AlertTriangle, Clock, HeartCrack, LucideIcon, HelpCircle, UserPlus, FileText, Smartphone } from "lucide-react";
+import { motion } from "framer-motion";
 import Image from "next/image";
-import { Hourglass, BatteryWarning, BrainCircuit } from "lucide-react";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef, useState } from "react";
 
 // --- Sub-Components ---
 
-// 1. Dark Rain Effect
-function RainEffect() {
-    return (
-        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30">
-            {/* Rain Layers using refined CSS gradients */}
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50"></div>
-
-            {/* Falling Rain Animation - We can simulate this with a repeating gradient moving downwards */}
-            <motion.div
-                animate={{ backgroundPosition: ["0% 0%", "0% 100%"] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 opacity-10"
-                style={{
-                    backgroundImage: "linear-gradient(to bottom, transparent 95%, #ffffff 100%)",
-                    backgroundSize: "2px 100px" // Long streaks
-                }}
-            />
-            <motion.div
-                animate={{ backgroundPosition: ["0% 0%", "0% 100%"] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }} // Slower layer
-                className="absolute inset-0 opacity-5"
-                style={{
-                    backgroundImage: "linear-gradient(to bottom, transparent 90%, #a0a0a0 100%)",
-                    backgroundSize: "1px 60px",
-                    backgroundPositionX: "50%" // Offset
-                }}
-            />
-        </div>
-    );
-}
-
-// 2. Thunder Flash Effect (Subtle Lightning)
-function ThunderEffect() {
-    const [flash, setFlash] = useState(false);
-
-    useEffect(() => {
-        const triggerThunder = () => {
-            // Random delay between 5 to 15 seconds
-            const delay = Math.random() * 10000 + 5000;
-            const timer = setTimeout(() => {
-                setFlash(true);
-                setTimeout(() => setFlash(false), 150); // Quick flash duration
-                triggerThunder(); // Recursively schedule next flash
-            }, delay);
-            return timer;
-        };
-
-        const timerId = triggerThunder();
-        return () => clearTimeout(timerId);
-    }, []);
-
-    return (
-        <motion.div
-            animate={{ opacity: flash ? 0.15 : 0 }}
-            className="absolute inset-0 z-20 bg-white pointer-events-none mix-blend-overlay"
-            transition={{ duration: 0.1 }}
-        />
-    );
-}
-
-// 3. Low Health Vignette (Pulsing Red Edges)
-function VignetteEffect() {
-    return (
-        <motion.div
-            animate={{ opacity: [0.4, 0.7, 0.4] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-0 z-10 pointer-events-none"
-            style={{
-                background: "radial-gradient(circle at center, transparent 0%, transparent 60%, rgba(50, 0, 0, 0.4) 100%)"
-            }}
-        />
-    );
-}
-
-// 4. Typewriter Text Effect
-function TypewriterText({ text, delay = 0 }: { text: string, delay?: number }) {
-    const [displayedText, setDisplayedText] = useState("");
-    const ref = React.useRef(null);
-    const isInView = useInView(ref, { once: true, margin: "-100px" });
-
-    useEffect(() => {
-        if (isInView) {
-            let i = 0;
-            const timer = setTimeout(() => {
-                const interval = setInterval(() => {
-                    setDisplayedText(text.slice(0, i + 1));
-                    i++;
-                    if (i === text.length) clearInterval(interval);
-                }, 30); // Typing speed
-                return () => clearInterval(interval);
-            }, delay * 1000);
-            return () => clearTimeout(timer);
-        }
-    }, [isInView, text, delay]);
-
-    return (
-        <span ref={ref} className="font-mono text-gray-300">
-            {displayedText}
-            <motion.span
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ repeat: Infinity, duration: 0.8 }}
-                className="inline-block w-[2px] h-[1em] bg-red-500 ml-1 align-middle"
-            />
-        </span>
-    );
-}
-
-// 3. Glitch Image Component (Shared Aesthetic)
 function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHovered: boolean }) {
     const [delays, setDelays] = React.useState({ d1: 0, d2: 0 });
 
@@ -137,7 +29,7 @@ function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHove
                 transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d1 }}
                 className="absolute inset-0 z-0 mix-blend-screen opacity-0"
             >
-                <div className="relative w-full h-full bg-cyan-900/50"> {/* Tint */}
+                <div className="relative w-full h-full bg-cyan-900/50">
                     <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
                 </div>
             </motion.div>
@@ -152,7 +44,7 @@ function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHove
                 transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d2 }}
                 className="absolute inset-0 z-0 mix-blend-screen opacity-0"
             >
-                <div className="relative w-full h-full bg-red-900/50"> {/* Tint */}
+                <div className="relative w-full h-full bg-red-900/50">
                     <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
                 </div>
             </motion.div>
@@ -186,23 +78,21 @@ function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass,
             ref={cardRef}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ margin: "-30% 0px -30% 0px", amount: "some" }} // Center "Hotzone"
+            viewport={{ margin: "-35% 0px -35% 0px", amount: "some" }}
             onViewportEnter={() => {
                 if (window.innerWidth < 768) setIsHovered(true);
             }}
             onViewportLeave={() => {
                 if (window.innerWidth < 768) setIsHovered(false);
             }}
-            transition={{ delay }}
+            transition={{ delay, duration: 0.5, ease: "easeOut" }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
             className="group bg-[#16181d] rounded-2xl overflow-hidden border border-gray-800/50 hover:border-red-900/30 transition-all duration-500 hover:shadow-2xl hover:shadow-red-900/5"
         >
             <div className="relative h-64 overflow-hidden bg-black">
                 <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-10 opacity-90"></div>
-
                 <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} />
-
                 <div className="absolute top-4 left-4 z-20 bg-black/40 backdrop-blur-md p-2 rounded-lg border border-white/5">
                     <Icon className={`w-5 h-5 ${iconColorClass}`} />
                 </div>
@@ -219,7 +109,7 @@ function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass,
 
 export default function AgitateSection() {
     return (
-        <section className="bg-[#0f1115] text-white py-0 relative">
+        <section className="bg-[#0f1115] text-white py-16 md:py-24 relative overflow-hidden">
             {/* Background Texture - Dark Islamic Pattern */}
             <div className="absolute inset-0 opacity-5 pointer-events-none"
                 style={{
@@ -227,88 +117,87 @@ export default function AgitateSection() {
                 }}
             ></div>
 
-            {/* Dark Rain Overlay */}
-            <RainEffect />
-            <ThunderEffect />
-            <VignetteEffect />
-
-            {/* PART 1: THE EMOTIONAL SCENARIO (Dark Atmosphere) */}
-            <div className="container mx-auto px-4 max-w-4xl py-16 md:py-24 relative z-10">
-                {/* Cinematic Story Typography */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ duration: 1 }}
-                    className="text-center mb-8"
-                >
-                    <span className="inline-block py-1 px-3 rounded-full bg-red-950/80 border border-red-900/50 text-red-200 text-xs font-bold tracking-[0.2em] uppercase mb-8 shadow-lg shadow-red-900/20">
-                        Realiti Kehidupan
-                    </span>
-
-                    <h2 className="text-3xl md:text-6xl font-bold leading-none mb-8 font-serif tracking-tight">
-                        <span className="block text-gray-400 text-2xl md:text-3xl mb-2 font-sans font-medium tracking-normal">Bayangkan Jika Malam Ini...</span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-br from-red-500 to-red-800 filter drop-shadow-lg">
-                            Malam Terakhir Kita?
-                        </span>
-                    </h2>
-
-                    <div className="max-w-3xl mx-auto space-y-6 text-lg md:text-xl text-gray-300 leading-relaxed font-light">
-                        <p className="min-h-[3em]">
-                            <TypewriterText
-                                text="Lampu bilik dipadamkan... Mata terpejam rapat. Tiba-tiba dada rasa sempit... Nafas makin berat..."
-                                delay={0.5}
-                            />
-                        </p>
-                        <p className="border-l-2 border-red-900/50 pl-6 italic text-gray-400">
-                            &quot;Masa itu, harta menggunung tak guna. Anak isteri tak boleh tolong.<br />
-                            Yang tinggal cuma kita... dan <span className="text-red-400 font-semibold decoration-red-900/50 underline decoration-1 underline-offset-4">hutang solat yang belum lunas.</span>&quot;
-                        </p>
-                    </div>
-                </motion.div>
-
-                {/* VISUAL SEPARATOR (Fading Line) */}
-                <div className="flex justify-center mb-10">
-                    <div className="h-16 w-px bg-gradient-to-b from-transparent via-red-900/50 to-transparent"></div>
+            <div className="container mx-auto px-4 max-w-6xl relative z-10">
+                <div className="text-center mb-16 md:mb-24">
+                    <motion.p
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className="text-red-500 font-semibold uppercase tracking-widest text-sm mb-4"
+                    >
+                        Tunggu Sekejap...
+                    </motion.p>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        className="text-3xl md:text-5xl font-bold text-white mb-6 font-serif max-w-3xl mx-auto leading-tight"
+                    >
+                        Bayangkan <span className="text-red-600 italic">Risiko</span> Jika Anda Terus Bertangguh...
+                    </motion.h2>
+                    <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: "100px" }}
+                        className="h-1 bg-red-900 mx-auto rounded-full"
+                    ></motion.div>
                 </div>
 
-
-
-                {/* PART 2: THE LOGICAL REALITY (Dark Cards with Real Images) */}
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid md:grid-cols-4 gap-6">
                     <AgitateCard
-                        title="Tenaga Makin Susut"
-                        description="Makin tua, lutut makin sakit. Nak sujud lama pun tak larat. Mampu ke nak qadha ribu-ribu rakaat masa tu?"
-                        imageSrc="/agitate_aging.png"
-                        icon={BatteryWarning}
-                        iconColorClass="text-yellow-500/80"
+                        title="Dosa Berangkai"
+                        description="Satu solat ditinggalkan tanpa uzur syarie, akan ditarik keberkatan dalam rezeki dan ketenangan hati."
+                        imageSrc="/freepik__heavy-rain-falling-over-a-dark-gloomy-city-street-a__65352.png"
+                        icon={HeartCrack}
+                        iconColorClass="text-red-500"
                         delay={0.1}
                     />
-
                     <AgitateCard
-                        title="Ingatan Makin Pudar"
-                        description="&quot;Tadi dah solat ke belum?&quot; Nyanyuk datang tanpa signal. Masa tu air mata darah pun tak guna kalau dah lupa cara sujud."
-                        imageSrc="/agitate_memory.png"
-                        icon={BrainCircuit}
-                        iconColorClass="text-blue-400/80"
+                        title="Hutang Tak Terbayar"
+                        description="Hutang dengan manusia kita takut, hutang dengan Pencipta? Makin lama makin bertimbun & berat."
+                        imageSrc="/freepik__a-distressed-man-kneeling-in-prayer-inside-a-dimly__65353.png"
+                        icon={HelpCircle}
+                        iconColorClass="text-orange-500"
+                        delay={0.2}
+                    />
+                    <AgitateCard
+                        title="Sakaratul Maut"
+                        description="Bayangkan saat nyawa di kerongkong, kita sesal tak ganti solat. Saat itu, segalanya sudah terlambat."
+                        imageSrc="/freepik__an-old-ancient-clock-with-cracked-glass-placed-on-__65354.png"
+                        icon={Clock}
+                        iconColorClass="text-yellow-500"
                         delay={0.3}
                     />
-
                     <AgitateCard
-                        title="Ajal Tak Menunggu"
-                        description="Malaikat Maut takkan tangguh walau sesaat. Mulakan qadha SEKARANG adalah &quot;hujah&quot; terbaik kita di sana nanti."
-                        imageSrc="/agitate_time.png"
-                        icon={Hourglass}
-                        iconColorClass="text-red-500/80 animate-spin-slow"
-                        delay={0.5}
+                        title="Fitnah Kubur"
+                        description="Soalan pertama di mahsyar adalah SOLAT. Adakah kita yakin mampu menjawab dengan hutang yang ada?"
+                        imageSrc="/freepik__a-faint-light-at-the-end-of-a-dark-mysterious-ston__65355.png"
+                        icon={AlertTriangle}
+                        iconColorClass="text-red-600"
+                        delay={0.4}
                     />
                 </div>
+
+                {/* Final Stir - Emotional Hook */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    className="mt-16 md:mt-24 bg-gradient-to-br from-[#1a1c22] to-black p-8 md:p-16 rounded-[2rem] border border-red-900/20 text-center relative overflow-hidden group shadow-2xl"
+                >
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                        <HeartCrack className="w-32 h-32 text-red-900" />
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-bold mb-6 text-red-500 italic">
+                        &quot;Mati Tak Kenal Usia...&quot;
+                    </h3>
+                    <p className="text-gray-300 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-light mb-8">
+                        Jangan biarkan penyesalan di akhirat menjadi <span className="text-white font-bold underline decoration-red-600 underline-offset-4">hadiah terakhir</span> anda untuk diri sendiri. Satu keputusan hari ini boleh merubah pengakhiran anda.
+                    </p>
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-10">
+                        <div className="flex items-center gap-3 text-stone-400">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span>
+                            <span className="text-sm">742 orang memulakan qadha hari ini</span>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
-            {/* BOTTOM WAVE DIVIDER (Transition to Solution Section) */}
-            <div className="absolute bottom-0 left-0 w-full leading-none z-10 translate-y-1">
-                <svg className="block w-full h-16 md:h-24" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill="#fffbeb" fillOpacity="1" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                </svg>
-            </div>
-        </section >
+        </section>
     );
 }
