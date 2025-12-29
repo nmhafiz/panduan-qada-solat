@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, Clock, HeartCrack, LucideIcon } from "lucide-react";
-import { motion, animate } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 // --- Sub-Components ---
@@ -94,7 +94,7 @@ interface ProblemCardProps {
     icon: LucideIcon;
     iconColorClass: string;
     isHeartbeat?: boolean; // For the heartbeat animation
-    variants: any;
+    variants: any; // Using any for Framer Motion variant object
 }
 
 function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass, isHeartbeat, variants }: ProblemCardProps) {
@@ -120,9 +120,18 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
         setIsHovered(false);
     };
 
+    // Animation Variants for performance batching
+    const cardVariants = {
+        idle: { scale: 1, borderColor: "rgba(31, 41, 55, 0.5)" },
+        hover: { scale: 1.02, borderColor: "rgba(220, 38, 38, 0.3)" }
+    };
+
     return (
         <motion.div
             variants={variants}
+            initial="idle"
+            whileInView="idle"
+            animate={isHovered ? "hover" : "idle"}
             ref={divRef}
             onViewportEnter={() => {
                 // Mobile: Activate when entering center zone
@@ -208,13 +217,15 @@ export default function ProblemSection() {
     return (
         <section className="py-16 md:py-24 bg-[#0f1115] text-white overflow-hidden relative font-sans">
             {/* Wave Divider (Transition from Hero) */}
-            <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] z-20 pointer-events-none">
+            <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] z-20 pointer-events-none h-[50px] md:h-[100px]">
                 <svg
-                    className="relative block w-[calc(100%+2px)] h-[50px] md:h-[100px] -translate-y-[1px]"
+                    className="relative block w-[calc(100%+2px)] h-full -translate-y-[1px]"
                     data-name="Layer 1"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 1200 120"
                     preserveAspectRatio="none"
+                    width="100%"
+                    height="100%"
                 >
                     <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="#052e16"></path>
                 </svg>

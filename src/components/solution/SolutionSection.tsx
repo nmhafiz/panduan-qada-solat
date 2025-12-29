@@ -2,13 +2,18 @@
 
 import Image from "next/image";
 import { Zap, Sparkles } from "lucide-react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 
 export default function SolutionSection() {
     const x = useMotionValue(0);
     const y = useMotionValue(0);
-    const rotateX = useTransform(y, [-100, 100], [10, -10]);
-    const rotateY = useTransform(x, [-100, 100], [-10, 10]);
+
+    // Dampen mouse movement for premium feel
+    const springX = useSpring(x, { stiffness: 150, damping: 25 });
+    const springY = useSpring(y, { stiffness: 150, damping: 25 });
+
+    const rotateX = useTransform(springY, [-100, 100], [10, -10]);
+    const rotateY = useTransform(springX, [-100, 100], [-10, 10]);
 
     return (
         <section className="py-24 bg-gradient-to-b from-amber-50 via-white to-white overflow-hidden relative">
@@ -60,7 +65,7 @@ export default function SolutionSection() {
                                     width={500}
                                     height={700}
                                     className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"
-                                    priority
+                                    quality={75}
                                 />
                                 {/* Gloss Reflection */}
                                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>

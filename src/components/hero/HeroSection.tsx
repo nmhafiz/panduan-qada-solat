@@ -34,10 +34,17 @@ export default function HeroSection() {
 
     // Scroll-Linked Animation for Mobile/Touch
     const { scrollY } = useScroll();
-    // Map scroll pixels (0 to 500) to rotation degrees (0 to 15)
-    const rotateXScroll = useTransform(scrollY, [0, 500], [0, 15]);
-    const rotateYScroll = useTransform(scrollY, [0, 500], [0, -15]);
-    // Smooth out the scroll effect
+
+    // Dampen the raw scroll value for silky smooth movement
+    const smoothScrollY = useSpring(scrollY, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
+
+    const rotateXScroll = useTransform(smoothScrollY, [0, 500], [0, 15]);
+    const rotateYScroll = useTransform(smoothScrollY, [0, 500], [0, -15]);
+
     const smoothRotateX = useSpring(rotateXScroll, { stiffness: 100, damping: 30 });
     const smoothRotateY = useSpring(rotateYScroll, { stiffness: 100, damping: 30 });
 
@@ -287,6 +294,7 @@ export default function HeroSection() {
                                     width={600}
                                     height={800}
                                     priority
+                                    quality={90}
                                     className="relative w-full h-auto drop-shadow-[0_35px_60px_rgba(0,0,0,0.6)]"
                                 />
 

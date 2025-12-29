@@ -31,11 +31,27 @@ export default function Home() {
       {/* GLOBAL MOBILE WRAPPER: Enforces no side-scroll on iPhone */}
       <div className="w-full max-w-[100vw] overflow-x-hidden relative">
         <HeroSection />
-        <ProblemSection />
-        <AgitateSection />
-        <SolutionSection />
-        <TargetPersonaSection />
-        <TestimonialsSection />
+
+        <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 1000px' }}>
+          <ProblemSection />
+        </div>
+
+        <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}>
+          <AgitateSection />
+        </div>
+
+        <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}>
+          <SolutionSection />
+        </div>
+
+        <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}>
+          <TargetPersonaSection />
+        </div>
+
+        <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 600px' }}>
+          <TestimonialsSection />
+        </div>
+
         <AuthorBioSection />
         <InsideLookSection />
         <ComparisonSection />
