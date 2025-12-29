@@ -61,7 +61,7 @@ export default function SolutionSection() {
                                 <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 to-transparent z-20 pointer-events-none mix-blend-overlay"></div>
                                 <Image
                                     src="/bukuqadhasolat.png"
-                                    alt="Buku Panduan Qadha Solat"
+                                    alt="Buku Fizikal Panduan Qadha Solat - Panduan Lengkap Qadha Solat Mufashil"
                                     width={500}
                                     height={700}
                                     className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105"

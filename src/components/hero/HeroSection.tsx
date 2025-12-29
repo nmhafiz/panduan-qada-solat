@@ -290,8 +290,8 @@ export default function HeroSection() {
 
                                 <Image
                                     src="/bukuqadhasolat.png"
-                                    alt="Buku Panduan Qadha Solat"
-                                    width={600}
+                                    alt="Buku Fizikal Panduan Qadha Solat - Panduan Lengkap Qadha Solat Mufashil"
+                                    width={500}
                                     height={800}
                                     priority
                                     quality={90}

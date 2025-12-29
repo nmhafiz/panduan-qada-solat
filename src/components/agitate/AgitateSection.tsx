@@ -2,7 +2,7 @@
 
 import { motion, useInView, Variants } from "framer-motion";
 import Image from "next/image";
-import { Hourglass, BatteryWarning, BrainCircuit } from "lucide-react";
+import { Hourglass, TrendingDown, Brain } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 
 // --- Sub-Components ---
@@ -204,6 +204,7 @@ interface AgitateCardProps {
     title: string;
     description: string;
     imageSrc: string;
+    imageAlt: string;
     icon: React.ElementType;
     iconColorClass: string;
     isHeartbeat?: boolean;
@@ -211,7 +212,7 @@ interface AgitateCardProps {
     isMobile: boolean;
 }
 
-function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass, isHeartbeat, variants, isMobile }: AgitateCardProps) {
+function AgitateCard({ title, description, imageSrc, imageAlt, icon: Icon, iconColorClass, isHeartbeat, variants, isMobile }: AgitateCardProps) {
     const divRef = useRef<HTMLDivElement>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [opacity, setOpacity] = useState(0);
@@ -262,7 +263,7 @@ function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass,
             />
 
             <div className="relative h-56 overflow-hidden bg-black">
-                <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} isMobile={isMobile} />
+                <GlitchImage src={imageSrc} alt={imageAlt} isHovered={isHovered} isMobile={isMobile} />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-20 opacity-90"></div>
 
@@ -392,33 +393,36 @@ export default function AgitateSection() {
                     className="grid md:grid-cols-3 gap-8"
                 >
                     <AgitateCard
-                        title="Tenaga Makin Susut"
-                        description="Makin tua, lutut makin sakit. Nak sujud lama pun tak larat. Mampu ke nak qadha ribu-ribu rakaat masa tu?"
+                        title="Tua & Uzur"
+                        description="Bila dah tua, nak solat fardu pun lutut dah sakit. Bayangkan kena qadha ribuan rakaat masa tu? Makin tertangguh..."
                         imageSrc="/agitate_aging.png"
-                        icon={BatteryWarning}
-                        iconColorClass="text-yellow-500/80"
+                        imageAlt="Seorang warga emas sedang duduk termenung sedih memikirkan masa muda yang disia-siakan"
+                        icon={TrendingDown}
+                        iconColorClass="text-red-500/90"
                         isHeartbeat={true}
                         variants={itemVariants}
                         isMobile={isMobile}
                     />
 
                     <AgitateCard
-                        title="Ingatan Makin Pudar"
-                        description="&quot;Tadi dah solat ke belum?&quot; Nyanyuk datang tanpa signal. Masa tu air mata darah pun tak guna kalau dah lupa cara sujud."
+                        title="Nyanyuk & Lupa"
+                        description="Risau bila dah nyanyuk nanti, kita langsung tak ingat apa-apa. Hutang solat tetap tergantung selamanya."
                         imageSrc="/agitate_memory.png"
-                        icon={BrainCircuit}
-                        iconColorClass="text-blue-400/80"
-                        isHeartbeat={true}
+                        imageAlt="Visual abstrak menunjukkan memori yang pudar melambangkan penyakit nyanyuk"
+                        icon={Brain}
+                        iconColorClass="text-indigo-400/90"
+                        isHeartbeat={false}
                         variants={itemVariants}
                         isMobile={isMobile}
                     />
 
                     <AgitateCard
-                        title="Ajal Tak Menunggu"
-                        description="Malaikat Maut takkan tangguh walau sesaat. Mulakan qadha SEKARANG adalah &quot;hujah&quot; terbaik kita di sana nanti."
+                        title="Masa Makin Suntuk"
+                        description="Setiap saat yang berlalu adalah saat yang takkan kembali. Jangan tunggu 'esok' yang belum tentu milik kita."
                         imageSrc="/agitate_time.png"
+                        imageAlt="Jam pasir dengan latar belakang gelap menunjukkan masa yang semakin berkurang"
                         icon={Hourglass}
-                        iconColorClass="text-red-500/80 animate-spin-slow"
+                        iconColorClass="text-amber-500/90"
                         isHeartbeat={true}
                         variants={itemVariants}
                         isMobile={isMobile}

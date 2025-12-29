@@ -100,6 +100,7 @@ interface ProblemCardProps {
     title: string;
     description: string;
     imageSrc: string;
+    imageAlt: string;
     icon: LucideIcon;
     iconColorClass: string;
     isHeartbeat?: boolean; // For the heartbeat animation
@@ -107,7 +108,7 @@ interface ProblemCardProps {
     isMobile: boolean;
 }
 
-function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass, isHeartbeat, variants, isMobile }: ProblemCardProps) {
+function ProblemCard({ title, description, imageSrc, imageAlt, icon: Icon, iconColorClass, isHeartbeat, variants, isMobile }: ProblemCardProps) {
     const divRef = useRef<HTMLDivElement>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [opacity, setOpacity] = useState(0);
@@ -165,7 +166,7 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
                 <SmokeEffect isMobile={isMobile} />
 
                 {/* Glitch Image handles the imagery + aberration */}
-                <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} isMobile={isMobile} />
+                <GlitchImage src={imageSrc} alt={imageAlt} isHovered={isHovered} isMobile={isMobile} />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-20 opacity-90"></div>
 
@@ -286,6 +287,7 @@ export default function ProblemSection() {
                         title="Rasa Bersalah"
                         description="Setiap kali nak tidur, terfikir dosa lama yang bertimbun. Rasa macam tak layak nak masuk syurga."
                         imageSrc="/freepik__a-malay-muslim-man-sitting-comfortably-on-a-prayer__47709.png"
+                        imageAlt="Lelaki muslim termenung berasa bersalah atas dosa lampau di atas sejadah"
                         icon={HeartCrack}
                         iconColorClass="text-red-500/90"
                         isHeartbeat={true}
@@ -298,6 +300,7 @@ export default function ProblemSection() {
                         title="Takut Mati Mengejut"
                         description="Risau kalau Allah tarik nyawa sekarang, sempat ke nak ganti semua hutang solat tu?"
                         imageSrc="/freepik__an-hourglass-with-sand-running-out-fast-placed-on-__47710.png"
+                        imageAlt="Jam pasir dengan pasir yang hampir habis melambangkan kesuntukan waktu"
                         icon={AlertTriangle}
                         iconColorClass="text-yellow-500/90"
                         isHeartbeat={true}
@@ -310,6 +313,7 @@ export default function ProblemSection() {
                         title="Keliru Mengira"
                         description="&quot;Dah berapa rakaat aku hutang sebenarnya?&quot; Tak tahu nak mula dari mana sebab tak ada rekod."
                         imageSrc="/freepik__close-up-of-malay-hands-holding-a-notebook-and-pen__47711.png"
+                        imageAlt="Tangan sedang memegang nota dan pen sedang keliru mengira hutang solat"
                         icon={Clock}
                         iconColorClass="text-blue-400/90"
                         isHeartbeat={false}
