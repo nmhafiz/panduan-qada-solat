@@ -8,15 +8,7 @@ import React, { useState, useEffect, useRef } from "react";
 // --- Sub-Components ---
 
 // 1. Dark Rain Effect
-function RainEffect() {
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+function RainEffect({ isMobile }: { isMobile: boolean }) {
 
     if (isMobile) return (
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-20">
@@ -54,15 +46,11 @@ function RainEffect() {
 }
 
 // 2. Thunder Flash Effect (Subtle Lightning)
-function ThunderEffect() {
+function ThunderEffect({ isMobile }: { isMobile: boolean }) {
     const [flash, setFlash] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-
-        if (window.innerWidth < 768) return;
+        if (isMobile) return;
 
         const triggerThunder = () => {
             // Random delay between 5 to 15 seconds
@@ -76,12 +64,8 @@ function ThunderEffect() {
         };
 
         const timerId = triggerThunder();
-        window.addEventListener('resize', checkMobile);
-        return () => {
-            clearTimeout(timerId);
-            window.removeEventListener('resize', checkMobile);
-        };
-    }, []);
+        return () => clearTimeout(timerId);
+    }, [isMobile]);
 
     if (isMobile) return null;
 
@@ -95,15 +79,7 @@ function ThunderEffect() {
 }
 
 // 3. Low Health Vignette (Pulsing Red Edges)
-function VignetteEffect() {
-    const [isMobile, setIsMobile] = useState(false);
-
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+function VignetteEffect({ isMobile }: { isMobile: boolean }) {
 
     return (
         <motion.div
@@ -118,12 +94,16 @@ function VignetteEffect() {
 }
 
 // 4. Typewriter Text Effect
-function TypewriterText({ text, delay = 0 }: { text: string, delay?: number }) {
-    const [displayedText, setDisplayedText] = useState("");
+function TypewriterText({ text, delay = 0, isMobile }: { text: string, delay?: number, isMobile: boolean }) {
+    const [displayedText, setDisplayedText] = useState(isMobile ? text : "");
     const ref = React.useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
 
     useEffect(() => {
+        if (isMobile) {
+            setDisplayedText(text);
+            return;
+        }
         if (isInView) {
             let i = 0;
             const timer = setTimeout(() => {
@@ -136,34 +116,31 @@ function TypewriterText({ text, delay = 0 }: { text: string, delay?: number }) {
             }, delay * 1000);
             return () => clearTimeout(timer);
         }
-    }, [isInView, text, delay]);
+    }, [isInView, text, delay, isMobile]);
 
     return (
         <span ref={ref} className="font-mono text-gray-300">
             {displayedText}
-            <motion.span
-                animate={{ opacity: [0, 1, 0] }}
-                transition={{ repeat: Infinity, duration: 0.8 }}
-                className="inline-block w-[2px] h-[1em] bg-red-500 ml-1 align-middle"
-            />
+            {!isMobile && (
+                <motion.span
+                    animate={{ opacity: [0, 1, 0] }}
+                    transition={{ repeat: Infinity, duration: 0.8 }}
+                    className="inline-block w-[2px] h-[1em] bg-red-500 ml-1 align-middle"
+                />
+            )}
         </span>
     );
 }
 
 // 3. Glitch Image Component (Shared Aesthetic)
-function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHovered: boolean }) {
+function GlitchImage({ src, alt, isHovered, isMobile }: { src: string; alt: string; isHovered: boolean, isMobile: boolean }) {
     const [delays, setDelays] = React.useState({ d1: 0, d2: 0 });
-    const [isMobile, setIsMobile] = useState(false);
 
     React.useEffect(() => {
         setDelays({
             d1: Math.random() * 0.5,
             d2: Math.random() * 0.5
         });
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     return (
@@ -207,8 +184,8 @@ function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHove
                 src={src}
                 alt={alt}
                 fill
-                quality={isMobile ? 75 : 85}
-                className={`object-cover relative z-10 transform transition-transform duration-1000 ${isHovered ? 'saturate-100 scale-110' : 'saturate-0 scale-100'} ${isMobile && isHovered ? 'animate-pulse' : ''}`}
+                quality={isMobile ? 70 : 85}
+                className={`object-cover relative z-10 transform transition-all duration-500 ${isHovered ? 'scale-105' : 'scale-100'} ${isMobile ? '' : (isHovered ? 'saturate-100' : 'saturate-0')}`}
             />
 
             {/* Simple Mobile Jitter Effect Override */}
@@ -230,9 +207,10 @@ interface AgitateCardProps {
     icon: React.ElementType;
     iconColorClass: string;
     delay: number;
+    isMobile: boolean;
 }
 
-function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass, delay }: AgitateCardProps) {
+function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass, delay, isMobile }: AgitateCardProps) {
     const [isHovered, setIsHovered] = useState(false);
     const cardRef = useRef(null);
 
@@ -243,10 +221,10 @@ function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass,
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ margin: "-35% 0px -35% 0px", amount: "some" }} // Refined hotzone
             onViewportEnter={() => {
-                if (window.innerWidth < 768) setIsHovered(true);
+                if (isMobile) setIsHovered(true);
             }}
             onViewportLeave={() => {
-                if (window.innerWidth < 768) setIsHovered(false);
+                if (isMobile) setIsHovered(false);
             }}
             transition={{ delay, duration: 0.5, ease: "easeOut" }}
             onMouseEnter={() => setIsHovered(true)}
@@ -256,9 +234,9 @@ function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass,
             <div className="relative h-64 overflow-hidden bg-black">
                 <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-10 opacity-90"></div>
 
-                <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} />
+                <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} isMobile={isMobile} />
 
-                <div className="absolute top-4 left-4 z-20 bg-black/60 md:bg-black/40 md:backdrop-blur-md p-2 rounded-lg border border-white/10 md:border-white/5">
+                <div className="absolute top-4 left-4 z-20 bg-black/70 md:bg-black/40 md:backdrop-blur-md p-2 rounded-lg border border-white/10 md:border-white/5">
                     <Icon className={`w-5 h-5 ${iconColorClass}`} />
                 </div>
             </div>
@@ -273,22 +251,31 @@ function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass,
 }
 
 export default function AgitateSection() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     return (
-        <section className="bg-[#0f1115] text-white py-0 relative">
+        <section className="bg-[#0f1115] text-white py-0 relative overflow-hidden">
             {/* Background Texture - Dark Islamic Pattern */}
-            <div className="absolute inset-0 opacity-5 pointer-events-none"
+            <div className={`absolute inset-0 opacity-5 pointer-events-none ${isMobile ? 'scale-150' : ''}`}
                 style={{
                     backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
                 }}
             ></div>
 
             {/* Dark Rain Overlay */}
-            <RainEffect />
-            <ThunderEffect />
-            <VignetteEffect />
+            <RainEffect isMobile={isMobile} />
+            <ThunderEffect isMobile={isMobile} />
+            <VignetteEffect isMobile={isMobile} />
 
             {/* PART 1: THE EMOTIONAL SCENARIO (Dark Atmosphere) */}
-            <div className="container mx-auto px-4 max-w-4xl py-16 md:py-24 relative z-10">
+            <div className="container mx-auto px-4 max-w-4xl py-12 md:py-24 relative z-10">
                 {/* Cinematic Story Typography */}
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -312,6 +299,7 @@ export default function AgitateSection() {
                             <TypewriterText
                                 text="Lampu bilik dipadamkan... Mata terpejam rapat. Tiba-tiba dada rasa sempit... Nafas makin berat..."
                                 delay={0.5}
+                                isMobile={isMobile}
                             />
                         </p>
                         <p className="border-l-2 border-red-900/50 pl-6 italic text-gray-400">
@@ -337,6 +325,7 @@ export default function AgitateSection() {
                         icon={BatteryWarning}
                         iconColorClass="text-yellow-500/80"
                         delay={0.1}
+                        isMobile={isMobile}
                     />
 
                     <AgitateCard
@@ -346,6 +335,7 @@ export default function AgitateSection() {
                         icon={BrainCircuit}
                         iconColorClass="text-blue-400/80"
                         delay={0.3}
+                        isMobile={isMobile}
                     />
 
                     <AgitateCard
@@ -355,6 +345,7 @@ export default function AgitateSection() {
                         icon={Hourglass}
                         iconColorClass="text-red-500/80 animate-spin-slow"
                         delay={0.5}
+                        isMobile={isMobile}
                     />
                 </div>
             </div>

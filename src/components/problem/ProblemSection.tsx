@@ -1,14 +1,13 @@
 "use client";
 
 import { AlertTriangle, Clock, HeartCrack, LucideIcon } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 // --- Sub-Components ---
 
 // 1. Anxiety Glitch Effect
-// Duplicates the image 2 times with Red/Cyan tint and jitters them on hover.
-function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHovered: boolean }) {
+function GlitchImage({ src, alt, isHovered, isMobile }: { src: string; alt: string; isHovered: boolean, isMobile: boolean }) {
     const [delays, setDelays] = React.useState({ d1: 0, d2: 0 });
 
     React.useEffect(() => {
@@ -20,49 +19,54 @@ function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHove
 
     return (
         <div className="relative w-full h-full">
-            {/* Cyan Channel - Glitch Layer 1 */}
-            <motion.div
-                animate={isHovered ? {
-                    x: [-2, 2, -1, 0, 2],
-                    y: [1, -1, 0, 2, -1],
-                    opacity: [0.5, 0.8, 0.5]
-                } : { x: 0, y: 0, opacity: 0 }}
-                transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d1 }}
-                className="absolute inset-0 z-0 mix-blend-screen opacity-0"
-            >
-                <div className="relative w-full h-full bg-cyan-900/50"> {/* Tint */}
-                    <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
-                </div>
-            </motion.div>
+            {/* Cyan Channel - Glitch Layer 1 - Desktop Only */}
+            {!isMobile && (
+                <motion.div
+                    animate={isHovered ? {
+                        x: [-2, 2, -1, 0, 2],
+                        y: [1, -1, 0, 2, -1],
+                        opacity: [0.5, 0.8, 0.5]
+                    } : { x: 0, y: 0, opacity: 0 }}
+                    transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d1 }}
+                    className="absolute inset-0 z-0 mix-blend-screen opacity-0"
+                >
+                    <div className="relative w-full h-full bg-cyan-900/50"> {/* Tint */}
+                        <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
+                    </div>
+                </motion.div>
+            )}
 
-            {/* Red Channel - Glitch Layer 2 */}
-            <motion.div
-                animate={isHovered ? {
-                    x: [2, -2, 1, 0, -2],
-                    y: [-1, 1, 0, -2, 1],
-                    opacity: [0.5, 0.8, 0.5]
-                } : { x: 0, y: 0, opacity: 0 }}
-                transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d2 }}
-                className="absolute inset-0 z-0 mix-blend-screen opacity-0"
-            >
-                <div className="relative w-full h-full bg-red-900/50"> {/* Tint */}
-                    <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
-                </div>
-            </motion.div>
+            {/* Red Channel - Glitch Layer 2 - Desktop Only */}
+            {!isMobile && (
+                <motion.div
+                    animate={isHovered ? {
+                        x: [2, -2, 1, 0, -2],
+                        y: [-1, 1, 0, -2, 1],
+                        opacity: [0.5, 0.8, 0.5]
+                    } : { x: 0, y: 0, opacity: 0 }}
+                    transition={{ duration: 0.2, repeat: Infinity, repeatDelay: delays.d2 }}
+                    className="absolute inset-0 z-0 mix-blend-screen opacity-0"
+                >
+                    <div className="relative w-full h-full bg-red-900/50"> {/* Tint */}
+                        <Image src={src} alt={alt} fill className="object-cover mix-blend-overlay opacity-70" />
+                    </div>
+                </motion.div>
+            )}
 
             {/* Main Image */}
             <Image
                 src={src}
                 alt={alt}
                 fill
-                className={`object-cover relative z-10 transform transition-transform duration-1000 ${isHovered ? 'saturate-100 scale-110' : 'saturate-0 scale-100'}`}
+                quality={isMobile ? 70 : 85}
+                className={`object-cover relative z-10 transform transition-all duration-500 ${isHovered ? 'scale-105' : 'scale-100'} ${isMobile ? '' : (isHovered ? 'saturate-100' : 'saturate-0')}`}
             />
         </div>
     );
 }
 
 // 2. Rising Smoke Effect
-function SmokeEffect() {
+function SmokeEffect({ isMobile }: { isMobile: boolean }) {
     return (
         <motion.div
             className="absolute bottom-0 left-0 w-full h-full pointer-events-none z-10 mix-blend-soft-light"
@@ -72,17 +76,22 @@ function SmokeEffect() {
         >
             {/* Simple CSS-based Fog/Noise Gradient */}
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent"></div>
-            {/* Animated smoky blobs using inline SVG filter would be complex, simplistic moving gradient is safer */}
-            <motion.div
-                animate={{ y: [0, -50, 0], x: [0, 10, 0], opacity: [0, 0.4, 0] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                className="absolute bottom-0 left-10 w-40 h-40 bg-gray-500/20 rounded-full blur-[50px]"
-            />
-            <motion.div
-                animate={{ y: [0, -70, 0], x: [0, -20, 0], opacity: [0, 0.3, 0] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear", delay: 2 }}
-                className="absolute bottom-10 right-10 w-56 h-56 bg-gray-600/20 rounded-full blur-[60px]"
-            />
+
+            {/* Animated smoky blobs - Desktop Only (Blur is heavy on mobile) */}
+            {!isMobile && (
+                <>
+                    <motion.div
+                        animate={{ y: [0, -50, 0], x: [0, 10, 0], opacity: [0, 0.4, 0] }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                        className="absolute bottom-0 left-10 w-40 h-40 bg-gray-500/20 rounded-full blur-[50px]"
+                    />
+                    <motion.div
+                        animate={{ y: [0, -70, 0], x: [0, -20, 0], opacity: [0, 0.3, 0] }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear", delay: 2 }}
+                        className="absolute bottom-10 right-10 w-56 h-56 bg-gray-600/20 rounded-full blur-[60px]"
+                    />
+                </>
+            )}
         </motion.div>
     );
 }
@@ -94,10 +103,11 @@ interface ProblemCardProps {
     icon: LucideIcon;
     iconColorClass: string;
     isHeartbeat?: boolean; // For the heartbeat animation
-    variants: any; // Using any for Framer Motion variant object
+    variants: Variants; // Using Variants type
+    isMobile: boolean;
 }
 
-function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass, isHeartbeat, variants }: ProblemCardProps) {
+function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass, isHeartbeat, variants, isMobile }: ProblemCardProps) {
     const divRef = useRef<HTMLDivElement>(null);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [opacity, setOpacity] = useState(0);
@@ -120,12 +130,6 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
         setIsHovered(false);
     };
 
-    // Animation Variants for performance batching
-    const cardVariants = {
-        idle: { scale: 1, borderColor: "rgba(31, 41, 55, 0.5)" },
-        hover: { scale: 1.02, borderColor: "rgba(220, 38, 38, 0.3)" }
-    };
-
     return (
         <motion.div
             variants={variants}
@@ -135,11 +139,11 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
             ref={divRef}
             onViewportEnter={() => {
                 // Mobile: Activate when entering center zone
-                if (window.innerWidth < 768) setIsHovered(true);
+                if (isMobile) setIsHovered(true);
             }}
             onViewportLeave={() => {
                 // Mobile: Deactivate when leaving
-                if (window.innerWidth < 768) setIsHovered(false);
+                if (isMobile) setIsHovered(false);
             }}
             viewport={{ margin: "-35% 0px -35% 0px", amount: "some" }} // Refined hotzone
             onMouseMove={handleMouseMove}
@@ -158,15 +162,15 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
 
             <div className="relative h-56 overflow-hidden bg-black">
                 {/* Smoke rises from the bottom */}
-                <SmokeEffect />
+                <SmokeEffect isMobile={isMobile} />
 
                 {/* Glitch Image handles the imagery + aberration */}
-                <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} />
+                <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} isMobile={isMobile} />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-10 opacity-90"></div>
 
                 {/* Icon Overlay with Heartbeat or Pulse */}
-                <div className="absolute top-4 left-4 z-20 bg-black/40 backdrop-blur-md p-2 rounded-lg border border-white/5">
+                <div className="absolute top-4 left-4 z-20 bg-black/70 md:bg-black/40 md:backdrop-blur-md p-2 rounded-lg border border-white/10 md:border-white/5">
                     {isHeartbeat ? (
                         <motion.div
                             animate={{ scale: [1, 1.2, 1, 1.2, 1] }} // Lub-dub effect
@@ -194,6 +198,14 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
 }
 
 export default function ProblemSection() {
+    const [isMobile, setIsMobile] = useState(false);
+
+    React.useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
     // Animation variants for stagger effect
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -282,6 +294,7 @@ export default function ProblemSection() {
                         iconColorClass="text-red-500/90"
                         isHeartbeat={true}
                         variants={itemVariants}
+                        isMobile={isMobile}
                     />
 
                     {/* Card 2: Takut Mati */}
@@ -293,6 +306,7 @@ export default function ProblemSection() {
                         iconColorClass="text-yellow-500/90"
                         isHeartbeat={true}
                         variants={itemVariants}
+                        isMobile={isMobile}
                     />
 
                     {/* Card 3: Keliru Mengira */}
@@ -304,6 +318,7 @@ export default function ProblemSection() {
                         iconColorClass="text-blue-400/90"
                         isHeartbeat={false}
                         variants={itemVariants}
+                        isMobile={isMobile}
                     />
                 </motion.div>
 

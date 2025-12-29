@@ -9,13 +9,22 @@ export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 30);
         };
+
         window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
+        window.addEventListener("resize", checkMobile);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("resize", checkMobile);
+        };
     }, []);
 
     const navLinks = [
@@ -40,8 +49,8 @@ export default function Header() {
                         opacity: 1,
                         width: isScrolled ? "min(900px, 95%)" : "100%",
                         borderRadius: isScrolled ? "50px" : "0px",
-                        background: isScrolled ? "rgba(255, 255, 255, 0.85)" : "transparent",
-                        backdropFilter: isScrolled ? "blur(20px)" : "blur(0px)",
+                        background: isScrolled ? (isMobile ? "rgba(255, 255, 255, 0.98)" : "rgba(255, 255, 255, 0.85)") : "transparent",
+                        backdropFilter: isScrolled && !isMobile ? "blur(20px)" : "blur(0px)",
                         border: isScrolled ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid transparent",
                         marginTop: isScrolled ? "20px" : "0px",
                         paddingTop: isScrolled ? "12px" : "24px",
@@ -133,7 +142,7 @@ export default function Header() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+                            className="fixed inset-0 bg-black/80 z-40 md:hidden"
                             onClick={() => setIsMobileMenuOpen(false)}
                         />
 
