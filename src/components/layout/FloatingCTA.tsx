@@ -82,7 +82,10 @@ export default function FloatingCTA() {
                             </div>
 
                             <motion.button
-                                onClick={() => document.getElementById('checkout')?.scrollIntoView({ behavior: 'smooth' })}
+                                onClick={() => {
+                                    setIsVisible(false);
+                                    document.getElementById('checkout')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="bg-gradient-to-r from-amber-400 to-amber-600 text-emerald-950 px-4 py-2.5 rounded-xl font-bold text-[11px] shadow-xl flex items-center gap-1.5 shrink-0"
