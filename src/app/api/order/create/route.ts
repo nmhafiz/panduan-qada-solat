@@ -7,11 +7,16 @@ export async function POST(request: Request) {
         // Proxy to Edge Function
         // This avoids exposing Secrets in Next.js Env and centralizes backend logic
         // URL is hardcoded or could be env var. Hardcoding is fine for this specific project context.
+        // URL is hardcoded or could be env var. Hardcoding is fine for this specific project context.
         const edgeFunctionUrl = "https://lstbqwnhxqrgsmlixkcw.supabase.co/functions/v1/qadasolat-create-order";
+        const anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxzdGJxd25oeHFyZ3NtbGl4a2N3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NTU4ODQsImV4cCI6MjA4MDMzMTg4NH0.N9esdEnfRBOFLA1OYux1MPtbcXQhs2Uww4nG6-vgbIM";
 
         const response = await fetch(edgeFunctionUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${anonKey}`
+            },
             body: JSON.stringify(body)
         });
 
