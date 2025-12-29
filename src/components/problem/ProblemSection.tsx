@@ -132,11 +132,11 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
                 // Mobile: Deactivate when leaving
                 if (window.innerWidth < 768) setIsHovered(false);
             }}
-            viewport={{ margin: "-30% 0px -30% 0px", amount: "some" }} // "Hotzone" is the middle 40%
+            viewport={{ margin: "-35% 0px -35% 0px", amount: "some" }} // Refined hotzone
             onMouseMove={handleMouseMove}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            className="group relative bg-[#16181d] rounded-2xl overflow-hidden border border-gray-800/50 transition-all duration-500 hover:shadow-2xl hover:shadow-red-900/10"
+            className="group relative bg-[#16181d] rounded-2xl overflow-hidden border border-gray-800/50 transition-all duration-500 hover:shadow-2xl hover:shadow-red-900/10 transform-gpu will-change-transform"
         >
             {/* Spotlight Gradient Overlay */}
             <div

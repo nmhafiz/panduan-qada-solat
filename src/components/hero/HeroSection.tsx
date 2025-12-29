@@ -278,7 +278,7 @@ export default function HeroSection() {
                                         ease: "easeInOut"
                                     }
                                 }}
-                                className="relative z-10 transform-style-3d transition-transform duration-200 ease-out"
+                                className="relative z-10 transform-style-3d transition-transform duration-200 ease-out will-change-transform"
                             >
 
                                 <Image

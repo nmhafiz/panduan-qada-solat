@@ -186,17 +186,17 @@ function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass,
             ref={cardRef}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ margin: "-30% 0px -30% 0px", amount: "some" }} // Center "Hotzone"
+            viewport={{ margin: "-35% 0px -35% 0px", amount: "some" }} // Refined hotzone
             onViewportEnter={() => {
                 if (window.innerWidth < 768) setIsHovered(true);
             }}
             onViewportLeave={() => {
                 if (window.innerWidth < 768) setIsHovered(false);
             }}
-            transition={{ delay }}
+            transition={{ delay, duration: 0.5, ease: "easeOut" }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className="group bg-[#16181d] rounded-2xl overflow-hidden border border-gray-800/50 hover:border-red-900/30 transition-all duration-500 hover:shadow-2xl hover:shadow-red-900/5"
+            className="group bg-[#16181d] rounded-2xl overflow-hidden border border-gray-800/50 hover:border-red-900/30 transition-all duration-500 hover:shadow-2xl hover:shadow-red-900/5 transform-gpu will-change-transform"
         >
             <div className="relative h-64 overflow-hidden bg-black">
                 <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-10 opacity-90"></div>

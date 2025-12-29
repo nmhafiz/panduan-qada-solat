@@ -46,7 +46,7 @@ export default function SolutionSection() {
                             transition={{
                                 y: { duration: 6, repeat: Infinity, ease: "easeInOut" } // Levitation loop
                             }}
-                            className="relative group cursor-grab active:cursor-grabbing transform-style-3d"
+                            className="relative group cursor-grab active:cursor-grabbing transform-style-3d transform-gpu will-change-transform"
                         >
                             {/* Halo Glow */}
                             <div className="absolute inset-0 bg-amber-200 blur-[60px] opacity-40 group-hover:opacity-60 transition-opacity duration-500 rounded-full scale-110 -z-10"></div>
