@@ -313,7 +313,7 @@ export default function CheckoutForm() {
             } else if (result.success) {
                 alert("Tempahan diterima! Semak email/WhatsApp anda.");
             } else {
-                alert("Ralat: " + result.error);
+                alert(`Ralat: ${result.error || JSON.stringify(result)}`);
             }
 
         } catch (error) {
