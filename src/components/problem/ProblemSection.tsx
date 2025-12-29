@@ -167,10 +167,10 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
                 {/* Glitch Image handles the imagery + aberration */}
                 <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} isMobile={isMobile} />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-10 opacity-90"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-20 opacity-90"></div>
 
                 {/* Icon Overlay with Heartbeat or Pulse */}
-                <div className="absolute top-4 left-4 z-20 bg-black/70 md:bg-black/40 md:backdrop-blur-md p-2 rounded-lg border border-white/10 md:border-white/5">
+                <div className="absolute top-4 left-4 z-30 bg-black/70 md:bg-black/40 md:backdrop-blur-md p-2 rounded-lg border border-white/10 md:border-white/5">
                     {isHeartbeat ? (
                         <motion.div
                             animate={{ scale: [1, 1.2, 1, 1.2, 1] }} // Lub-dub effect
