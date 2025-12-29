@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, Variants } from "framer-motion";
 import Image from "next/image";
 import { Hourglass, BatteryWarning, BrainCircuit } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
@@ -206,38 +206,82 @@ interface AgitateCardProps {
     imageSrc: string;
     icon: React.ElementType;
     iconColorClass: string;
-    delay: number;
+    isHeartbeat?: boolean;
+    variants: Variants;
     isMobile: boolean;
 }
 
-function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass, delay, isMobile }: AgitateCardProps) {
+function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass, isHeartbeat, variants, isMobile }: AgitateCardProps) {
+    const divRef = useRef<HTMLDivElement>(null);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [opacity, setOpacity] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
-    const cardRef = useRef(null);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!divRef.current) return;
+        const rect = divRef.current.getBoundingClientRect();
+        setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+        setOpacity(1);
+    };
+
+    const handleMouseEnter = () => {
+        setIsHovered(true);
+        setOpacity(1);
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(false);
+    };
 
     return (
         <motion.div
-            ref={cardRef}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ margin: "-35% 0px -35% 0px", amount: "some" }} // Refined hotzone
+            variants={variants}
+            initial="idle"
+            whileInView="idle"
+            animate={isHovered ? "hover" : "idle"}
+            ref={divRef}
             onViewportEnter={() => {
                 if (isMobile) setIsHovered(true);
             }}
             onViewportLeave={() => {
                 if (isMobile) setIsHovered(false);
             }}
-            transition={{ delay, duration: 0.5, ease: "easeOut" }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            className="group bg-[#16181d] rounded-2xl overflow-hidden border border-gray-800/50 hover:border-red-900/30 transition-all duration-500 hover:shadow-2xl hover:shadow-red-900/5 transform-gpu will-change-transform"
+            viewport={{ margin: "-35% 0px -35% 0px", amount: "some" }}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className="group relative bg-[#16181d] rounded-2xl overflow-hidden border border-gray-800/50 transition-all duration-500 hover:shadow-2xl hover:shadow-red-900/10 transform-gpu will-change-transform"
         >
-            <div className="relative h-64 overflow-hidden bg-black">
+            {/* Spotlight Gradient Overlay */}
+            <div
+                className="pointer-events-none absolute -inset-px transition duration-300 z-30"
+                style={{
+                    opacity,
+                    background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(220, 38, 38, 0.15), transparent 40%)`,
+                }}
+            />
+
+            <div className="relative h-56 overflow-hidden bg-black">
                 <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-10 opacity-90"></div>
 
                 <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} isMobile={isMobile} />
 
                 <div className="absolute top-4 left-4 z-20 bg-black/70 md:bg-black/40 md:backdrop-blur-md p-2 rounded-lg border border-white/10 md:border-white/5">
-                    <Icon className={`w-5 h-5 ${iconColorClass}`} />
+                    {isHeartbeat ? (
+                        <motion.div
+                            animate={{ scale: [1, 1.2, 1, 1.2, 1] }}
+                            transition={{
+                                duration: 1.5,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                                times: [0, 0.1, 0.2, 0.3, 1]
+                            }}
+                        >
+                            <Icon className={`w-5 h-5 ${iconColorClass}`} />
+                        </motion.div>
+                    ) : (
+                        <Icon className={`w-5 h-5 ${iconColorClass}`} />
+                    )}
                 </div>
             </div>
             <div className="p-6 md:p-8 relative z-20 -mt-12">
@@ -259,6 +303,25 @@ export default function AgitateSection() {
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 30 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.5, ease: "easeOut" as const }
+        }
+    };
 
     return (
         <section className="bg-[#0f1115] text-white py-0 relative overflow-hidden">
@@ -287,12 +350,20 @@ export default function AgitateSection() {
                         Realiti Kehidupan
                     </span>
 
-                    <h2 className="text-3xl md:text-6xl font-bold leading-none mb-8 font-serif tracking-tight">
+                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 font-serif text-balance">
                         <span className="block text-gray-400 text-2xl md:text-3xl mb-2 font-sans font-medium tracking-normal">Bayangkan Jika Malam Ini...</span>
-                        <span className="text-transparent bg-clip-text bg-gradient-to-br from-red-500 to-red-800 filter drop-shadow-lg">
+                        <span className="text-red-600 filter drop-shadow-lg">
                             Malam Terakhir Kita?
                         </span>
                     </h2>
+
+                    <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: "60%" }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="h-1 bg-red-800/50 mx-auto rounded-full mb-8"
+                    ></motion.div>
 
                     <div className="max-w-3xl mx-auto space-y-6 text-lg md:text-xl text-gray-300 leading-relaxed font-light">
                         <p className="min-h-[3em]">
@@ -317,14 +388,21 @@ export default function AgitateSection() {
 
 
                 {/* PART 2: THE LOGICAL REALITY (Dark Cards with Real Images) */}
-                <div className="grid md:grid-cols-3 gap-8">
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true, margin: "-100px" }}
+                    className="grid md:grid-cols-3 gap-8"
+                >
                     <AgitateCard
                         title="Tenaga Makin Susut"
                         description="Makin tua, lutut makin sakit. Nak sujud lama pun tak larat. Mampu ke nak qadha ribu-ribu rakaat masa tu?"
                         imageSrc="/agitate_aging.png"
                         icon={BatteryWarning}
                         iconColorClass="text-yellow-500/80"
-                        delay={0.1}
+                        isHeartbeat={true}
+                        variants={itemVariants}
                         isMobile={isMobile}
                     />
 
@@ -334,7 +412,8 @@ export default function AgitateSection() {
                         imageSrc="/agitate_memory.png"
                         icon={BrainCircuit}
                         iconColorClass="text-blue-400/80"
-                        delay={0.3}
+                        isHeartbeat={true}
+                        variants={itemVariants}
                         isMobile={isMobile}
                     />
 
@@ -344,10 +423,11 @@ export default function AgitateSection() {
                         imageSrc="/agitate_time.png"
                         icon={Hourglass}
                         iconColorClass="text-red-500/80 animate-spin-slow"
-                        delay={0.5}
+                        isHeartbeat={true}
+                        variants={itemVariants}
                         isMobile={isMobile}
                     />
-                </div>
+                </motion.div>
             </div>
             {/* BOTTOM WAVE DIVIDER (Transition to Solution Section) */}
             <div className="absolute bottom-0 left-0 w-full leading-none z-10 translate-y-1 h-16 md:h-24">
