@@ -69,7 +69,7 @@ export default function ThankYouPage() {
                         Kembali ke Laman Utama
                     </Link>
                     <a
-                        href="https://wa.me/60123456789"
+                        href="https://wa.me/60179949054?text=Salam%2C%20saya%20dah%20buat%20tempahan%20Buku%20Panduan%20Qadha%20Solat.%20Ini%20bukti%20pembayaran%20saya."
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-3 rounded-xl transition-all"

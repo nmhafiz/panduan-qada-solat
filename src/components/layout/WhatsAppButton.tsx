@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 const WhatsAppButton = () => {
     const [shouldShift, setShouldShift] = useState(false);
-    const phoneNumber = "60123456789"; // TODO: Update with actual number
+    const phoneNumber = "60179949054";
     const message = encodeURIComponent("Salam, saya berminat dengan Panduan Qadha Solat.");
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 

@@ -22,7 +22,7 @@ export default function FooterSection() {
                     {/* Links */}
                     <div className="flex flex-col md:flex-row gap-4 md:gap-6 text-sm text-gray-400">
                         <a
-                            href="https://wa.me/60123456789"
+                            href="https://wa.me/60179949054?text=Salam%2C%20saya%20nak%20tanya%20tentang%20Buku%20Panduan%20Qadha%20Solat."
                             target="_blank"
                             rel="noopener noreferrer"
                             className="hover:text-green-400 transition-colors flex items-center gap-2"
