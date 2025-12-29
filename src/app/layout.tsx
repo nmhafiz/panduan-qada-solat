@@ -44,6 +44,7 @@ export const metadata: Metadata = {
     images: ['/bukuqadhasolat.png'],
   },
   keywords: ["qadha solat", "ganti solat", "buku solat", "panduan solat mufashil", "galeri mukmin", "cara qadha solat lama", "jadual qadha solat"],
+  manifest: '/manifest.json',
 };
 
 export const viewport = {
