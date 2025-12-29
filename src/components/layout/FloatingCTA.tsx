@@ -7,16 +7,41 @@ export default function FloatingCTA() {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 400) {
-                setIsVisible(true);
-            } else {
-                setIsVisible(false);
-            }
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px'
         };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
+        const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+            entries.forEach(entry => {
+                if (entry.target.id === 'solution' && entry.isIntersecting) {
+                    setIsVisible(true);
+                }
+                if (entry.target.id === 'price' && entry.isIntersecting) {
+                    setIsVisible(false);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(handleIntersection, observerOptions);
+
+        const solutionSection = document.getElementById('solution');
+        const priceSection = document.getElementById('price');
+
+        if (solutionSection) observer.observe(solutionSection);
+        if (priceSection) observer.observe(priceSection);
+
+        // Fallback for direct scroll if elements not immediately available
+        const handleScrollFallback = () => {
+            if (window.scrollY < 200) setIsVisible(false);
+        };
+        window.addEventListener('scroll', handleScrollFallback, { passive: true });
+
+        return () => {
+            if (solutionSection) observer.unobserve(solutionSection);
+            if (priceSection) observer.unobserve(priceSection);
+            window.removeEventListener('scroll', handleScrollFallback);
+        };
     }, []);
 
     return (

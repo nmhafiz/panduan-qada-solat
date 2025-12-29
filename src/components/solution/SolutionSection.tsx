@@ -16,7 +16,7 @@ export default function SolutionSection() {
     const rotateY = useTransform(springX, [-100, 100], [-10, 10]);
 
     return (
-        <section className="py-24 bg-gradient-to-b from-amber-50 via-white to-white overflow-hidden relative">
+        <section id="solution" className="py-24 bg-gradient-to-b from-amber-50 via-white to-white overflow-hidden relative">
             {/* Background Atmosphere */}
             <DivineRays />
             <SerenityParticles />
