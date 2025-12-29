@@ -1,6 +1,8 @@
 
 import { NextResponse } from "next/server";
 
+export const runtime = 'edge';
+
 // In a real DB, you'd insert/upsert into an Orders table with status='DRAFT'
 // adhering to the existing DB schema or Bizapp schema if applicable.
 // Since we might not have a full DB migration for 'drafts' yet, 
