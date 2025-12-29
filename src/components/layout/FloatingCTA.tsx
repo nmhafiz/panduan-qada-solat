@@ -20,6 +20,9 @@ export default function FloatingCTA() {
                 if (entry.target.id === 'price' && entry.isIntersecting) {
                     setIsVisible(false);
                 }
+                if (entry.target.id === 'faq' && entry.isIntersecting) {
+                    setIsVisible(true);
+                }
             });
         };
 
@@ -27,9 +30,11 @@ export default function FloatingCTA() {
 
         const solutionSection = document.getElementById('solution');
         const priceSection = document.getElementById('price');
+        const faqSection = document.getElementById('faq');
 
         if (solutionSection) observer.observe(solutionSection);
         if (priceSection) observer.observe(priceSection);
+        if (faqSection) observer.observe(faqSection);
 
         // Fallback for direct scroll if elements not immediately available
         const handleScrollFallback = () => {
@@ -40,6 +45,7 @@ export default function FloatingCTA() {
         return () => {
             if (solutionSection) observer.unobserve(solutionSection);
             if (priceSection) observer.unobserve(priceSection);
+            if (faqSection) observer.unobserve(faqSection);
             window.removeEventListener('scroll', handleScrollFallback);
         };
     }, []);

@@ -31,7 +31,7 @@ export default function FAQSection() {
     const [activeIndex, setActiveIndex] = useState<number | null>(0);
 
     return (
-        <section className="py-24 bg-gradient-to-b from-emerald-50/30 to-stone-100 relative overflow-hidden border-t border-stone-200">
+        <section id="faq" className="py-24 bg-gradient-to-b from-emerald-50/30 to-stone-100 relative overflow-hidden border-t border-stone-200">
             {/* Background Pattern - Islamic Geometric (Undeniable Visibility) */}
             <div className="absolute inset-0 opacity-[0.15] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/arabesque.png')]"></div>
 
