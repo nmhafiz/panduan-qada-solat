@@ -578,52 +578,58 @@ export default function CheckoutForm() {
                         <label className="text-gray-900 font-bold uppercase tracking-wide text-sm">Pilih Cara Bayaran:</label>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3 md:gap-4">
                         {/* COD Option */}
                         <label className={`
-                            relative cursor-pointer p-5 rounded-2xl border-2 text-left transition-all duration-300 group
+                            relative cursor-pointer p-4 rounded-2xl border-2 text-left transition-all duration-300 group flex flex-col justify-between min-h-[140px]
                             ${paymentMethod === 'cod'
                                 ? 'border-emerald-600 bg-white shadow-xl shadow-emerald-900/10 ring-1 ring-emerald-600 z-10'
-                                : 'border-slate-200 hover:border-slate-300 bg-white/50 text-gray-500 hover:bg-white'
+                                : 'border-slate-200 hover:border-emerald-100 bg-white/50 text-gray-500 hover:bg-white'
                             }
                         `}>
                             <input type="radio" name="payment" value="cod" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="hidden" />
-                            <div className="flex items-start justify-between mb-3">
+
+                            <div className="flex items-start justify-between">
                                 <div className={`p-2 rounded-lg ${paymentMethod === 'cod' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-gray-400'}`}>
-                                    <Truck className="w-6 h-6" />
+                                    <Truck className="w-5 h-5" />
                                 </div>
-                                {paymentMethod === 'cod' && <CheckCircle2 className="w-6 h-6 text-emerald-600" />}
+                                {paymentMethod === 'cod' && <CheckCircle2 className="w-5 h-5 text-emerald-600" />}
                             </div>
-                            <div className={`font-bold text-base mb-1 ${paymentMethod === 'cod' ? 'text-gray-900' : 'text-gray-600'}`}>COD (Barang Sampai Baru Bayar)</div>
-                            <p className="text-xs text-slate-500 leading-relaxed">
-                                Bayar tunai kepada posmen DHL/NinjaVan apabila barang sampai di tangan anda.
-                            </p>
+
+                            <div>
+                                <div className={`font-bold text-sm leading-tight mb-1 ${paymentMethod === 'cod' ? 'text-gray-900' : 'text-gray-600'}`}>COD (Bayar Tunai)</div>
+                                <div className="flex gap-1 opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all">
+                                    <span className="text-[8px] font-bold border border-slate-200 px-1 rounded uppercase">DHL</span>
+                                    <span className="text-[8px] font-bold border border-slate-200 px-1 rounded uppercase">Ninja</span>
+                                </div>
+                            </div>
                         </label>
 
                         {/* Online Banking Option */}
                         <label className={`
-                            relative cursor-pointer p-5 rounded-2xl border-2 text-left transition-all duration-300 group
+                            relative cursor-pointer p-4 rounded-2xl border-2 text-left transition-all duration-300 group flex flex-col justify-between min-h-[140px]
                             ${paymentMethod === 'online'
                                 ? 'border-blue-600 bg-white shadow-xl shadow-blue-900/10 ring-1 ring-blue-600 z-10'
-                                : 'border-slate-200 hover:border-slate-300 bg-white/50 text-gray-500 hover:bg-white'
+                                : 'border-slate-200 hover:border-blue-100 bg-white/50 text-gray-500 hover:bg-white'
                             }
                         `}>
                             <input type="radio" name="payment" value="online" checked={paymentMethod === 'online'} onChange={() => setPaymentMethod('online')} className="hidden" />
-                            <div className="flex items-start justify-between mb-3">
+
+                            <div className="flex items-start justify-between">
                                 <div className={`p-2 rounded-lg ${paymentMethod === 'online' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-gray-400'}`}>
-                                    <CreditCard className="w-6 h-6" />
+                                    <CreditCard className="w-5 h-5" />
                                 </div>
-                                {paymentMethod === 'online' && <CheckCircle2 className="w-6 h-6 text-blue-600" />}
+                                <div className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded-full ${paymentMethod === 'online' ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-700'}`}>
+                                    Paling Laju
+                                </div>
                             </div>
-                            <div className={`font-bold text-base mb-1 ${paymentMethod === 'online' ? 'text-gray-900' : 'text-gray-600'}`}>Online Banking & E-Wallet</div>
-                            <p className="text-xs text-slate-500 leading-relaxed mb-2">
-                                FPX, Maybank2u, CIMB Clicks, GrabPay, ShopeePay, TnG eWallet.
-                            </p>
-                            {/* Mini Logos */}
-                            <div className="flex items-center gap-2 opacity-60 grayscale group-hover:grayscale-0 transition-all">
-                                <span className="text-[10px] font-bold border border-slate-200 px-1 rounded bg-slate-50">FPX</span>
-                                <span className="text-[10px] font-bold border border-slate-200 px-1 rounded bg-slate-50">Grab</span>
-                                <span className="text-[10px] font-bold border border-slate-200 px-1 rounded bg-slate-50">TnG</span>
+
+                            <div>
+                                <div className={`font-bold text-sm leading-tight mb-1 ${paymentMethod === 'online' ? 'text-gray-900' : 'text-gray-600'}`}>Online Banking</div>
+                                <div className="flex gap-1 opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all">
+                                    <span className="text-[8px] font-bold border border-slate-200 px-1 rounded">FPX</span>
+                                    <span className="text-[8px] font-bold border border-slate-200 px-1 rounded">Card</span>
+                                </div>
                             </div>
                         </label>
                     </div>
