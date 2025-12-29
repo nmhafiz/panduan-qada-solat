@@ -228,7 +228,7 @@ export default function ProblemSection() {
     };
 
     return (
-        <section className="py-16 md:py-24 bg-[#0f1115] text-white overflow-hidden relative font-sans">
+        <section id="problem" className="py-16 md:py-24 bg-[#0f1115] text-white overflow-hidden relative font-sans">
             {/* Wave Divider (Transition from Hero) */}
             <div className="absolute top-0 left-0 w-full overflow-hidden leading-[0] z-20 pointer-events-none h-[50px] md:h-[100px]">
                 <svg

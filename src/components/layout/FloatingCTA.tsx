@@ -17,7 +17,7 @@ export default function FloatingCTA() {
                 if (entry.target.id === 'solution' && entry.isIntersecting) {
                     setIsVisible(true);
                 }
-                if (entry.target.id === 'price' && entry.isIntersecting) {
+                if (entry.target.id === 'pricing' && entry.isIntersecting) {
                     setIsVisible(false);
                 }
                 if (entry.target.id === 'checkout' && entry.isIntersecting) {
@@ -32,12 +32,12 @@ export default function FloatingCTA() {
         const observer = new IntersectionObserver(handleIntersection, observerOptions);
 
         const solutionSection = document.getElementById('solution');
-        const priceSection = document.getElementById('price');
+        const pricingSection = document.getElementById('pricing');
         const checkoutSection = document.getElementById('checkout');
         const faqSection = document.getElementById('faq');
 
         if (solutionSection) observer.observe(solutionSection);
-        if (priceSection) observer.observe(priceSection);
+        if (pricingSection) observer.observe(pricingSection);
         if (checkoutSection) observer.observe(checkoutSection);
         if (faqSection) observer.observe(faqSection);
 
@@ -49,7 +49,7 @@ export default function FloatingCTA() {
 
         return () => {
             if (solutionSection) observer.unobserve(solutionSection);
-            if (priceSection) observer.unobserve(priceSection);
+            if (pricingSection) observer.unobserve(pricingSection);
             if (checkoutSection) observer.unobserve(checkoutSection);
             if (faqSection) observer.unobserve(faqSection);
             window.removeEventListener('scroll', handleScrollFallback);

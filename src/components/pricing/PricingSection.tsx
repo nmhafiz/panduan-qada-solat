@@ -6,7 +6,7 @@ import Link from "next/link"; // Changed from 'next/scroll' to 'next/link' for a
 
 export default function PricingSection() {
     return (
-        <section id="price" className="py-24 relative overflow-hidden bg-emerald-900">
+        <section id="pricing" className="py-24 relative overflow-hidden bg-emerald-900">
             {/* Ambient Background */}
             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-4xl bg-emerald-500/20 blur-[120px] rounded-full pointer-events-none"></div>
