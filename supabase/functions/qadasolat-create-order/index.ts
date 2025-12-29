@@ -102,7 +102,7 @@ serve(async (req) => {
         bizappBody.append('payer_name', customer.name);
         bizappBody.append('payer_email', customer.email);
         bizappBody.append('payer_phone', customer.phone);
-        bizappBody.append('webreturn_url', "https://panduan-qadha-solat-lz.netlify.app/terima-kasih");
+        bizappBody.append('webreturn_url', "https://qadasolat.my/terima-kasih");
         bizappBody.append('callback_url', `${supabaseUrl}/functions/v1/qadasolat-webhook`);
         bizappBody.append('ext_reference', refId);
 
