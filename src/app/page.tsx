@@ -11,6 +11,7 @@ import ComparisonSection from "@/components/comparison/ComparisonSection";
 import ValueStackSection from "@/components/pricing/ValueStackSection";
 import PricingSection from "@/components/pricing/PricingSection";
 import CheckoutForm from "@/components/checkout/CheckoutForm";
+import TrustProcessSection from "@/components/checkout/TrustProcessSection";
 import FAQSection from "@/components/faq/FAQSection";
 
 import FloatingCTA from "@/components/layout/FloatingCTA";
@@ -19,6 +20,7 @@ import FooterSection from "@/components/footer/FooterSection";
 import FinalCTASection from "@/components/cta/FinalCTASection";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
 import ScrollProgress from "@/components/layout/ScrollProgress";
+import SpiritualExit from "@/components/layout/SpiritualExit";
 
 export default function Home() {
   return (
@@ -44,7 +46,7 @@ export default function Home() {
           <SolutionSection />
         </div>
 
-        <div style={{ contentVisibility: 'auto', containIntrinsicSize: '0 800px' }}>
+        <div>
           <TargetPersonaSection />
         </div>
 
@@ -74,8 +76,11 @@ export default function Home() {
           </div>
         </section>
 
+        <TrustProcessSection />
+
         <FinalCTASection />
         <FAQSection />
+        <SpiritualExit />
         <FooterSection />
       </div>
 

@@ -179,7 +179,7 @@ export default function HeroSection() {
                             >
                                 {/* Gold/Premium CTA */}
                                 <Link href="#pricing" className="group relative inline-flex items-center justify-center gap-3 bg-gradient-to-b from-yellow-400 to-yellow-600 text-yellow-950 font-bold text-lg px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_30px_rgba(234,179,8,0.5)] hover:scale-105 transition-all duration-300 ring-1 ring-yellow-400/50">
-                                    <span className="relative z-10">Dapatkan Kitab Panduan</span>
+                                    <span className="relative z-10">Dapatkan Buku Panduan</span>
                                     <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                                     <div className="absolute inset-0 bg-white/20 blur opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"></div>
                                 </Link>
@@ -290,7 +290,7 @@ export default function HeroSection() {
 
                                 <Image
                                     src="/bukuqadhasolat.png"
-                                    alt="Kitab Panduan Qadha Solat"
+                                    alt="Buku Panduan Qadha Solat"
                                     width={600}
                                     height={800}
                                     priority

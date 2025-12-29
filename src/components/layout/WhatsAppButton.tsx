@@ -1,19 +1,41 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 const WhatsAppButton = () => {
+    const [shouldShift, setShouldShift] = useState(false);
     const phoneNumber = "60123456789"; // TODO: Update with actual number
     const message = encodeURIComponent("Salam, saya berminat dengan Panduan Qadha Solat.");
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
+    useEffect(() => {
+        const handleScroll = () => {
+            // Match the threshold in FloatingCTA (400)
+            if (window.scrollY > 400) {
+                setShouldShift(true);
+            } else {
+                setShouldShift(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
-        <a
+        <motion.a
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Hubungi kami melalui WhatsApp"
-            className="fixed z-50 bottom-24 md:bottom-8 right-4 md:right-6 w-14 h-14 bg-[#25D366] hover:bg-[#128C7E] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group"
+            initial={false}
+            animate={{
+                bottom: shouldShift ? "144px" : "32px",
+                right: "16px"
+            }}
+            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            className="fixed z-50 w-14 h-14 bg-[#25D366] hover:bg-[#128C7E] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 group md:bottom-8 md:right-6"
         >
             {/* Ping Animation */}
             <span className="absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75 animate-ping" />
@@ -32,7 +54,7 @@ const WhatsAppButton = () => {
             <span className="hidden md:block absolute right-16 bg-gray-900 text-white text-sm font-medium px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
                 WhatsApp Kami
             </span>
-        </a>
+        </motion.a>
     );
 };
 

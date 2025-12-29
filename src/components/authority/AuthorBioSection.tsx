@@ -2,86 +2,123 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Award, Users } from "lucide-react";
+import { Star, Quote, Tv, CheckCircle2 } from "lucide-react";
 
 export default function AuthorBioSection() {
     return (
-        <section className="py-20 bg-white border-y border-gray-100 overflow-hidden relative">
-            <div className="container mx-auto px-4 max-w-5xl relative z-10">
-                <div className="flex flex-col md:flex-row items-center gap-10 md:gap-16">
-                    {/* Avatar/Image Area */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        className="flex-shrink-0 relative"
-                    >
-                        <div className="w-48 h-48 md:w-64 md:h-64 rounded-full bg-gradient-to-tr from-gray-200 to-white border-8 border-white shadow-2xl overflow-hidden flex items-center justify-center relative z-10 group">
-                            <Image
-                                src="/ustazamarmirza.JPG"
-                                alt="Ustaz Amar Mirza"
-                                width={256}
-                                height={256}
-                                className="w-full h-full object-cover object-top hover:scale-110 transition-transform duration-700 ease-out filter contrast-110 brightness-105 saturate-[0.85] sepia-[0.05]"
-                            />
-                            {/* Premium Gloss Overlay */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-black/0 via-white/10 to-white/30 pointer-events-none rounded-full"></div>
-                        </div>
-                        {/* Decorative blob behind */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-green-100 rounded-full blur-3xl -z-10"></div>
-                    </motion.div>
+        <section className="py-24 bg-stone-50 overflow-hidden relative">
+            {/* --- Background Elements --- */}
+            {/* Subtle Islamic Motif / Texture */}
+            <div className="absolute inset-0 opacity-[0.4]" style={{ backgroundImage: `radial-gradient(circle at 1px 1px, #d6d3d1 1px, transparent 0)`, backgroundSize: '24px 24px' }}></div>
 
-                    {/* Bio Text */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        className="text-center md:text-left flex-1"
-                    >
-                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-4">
-                            <span className="bg-yellow-50 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200 flex items-center gap-1">
-                                <Award className="w-3 h-3" /> Penulis Berpengalaman
-                            </span>
-                            <span className="bg-blue-50 text-blue-800 text-xs font-bold px-3 py-1 rounded-full border border-blue-200 flex items-center gap-1">
-                                <Users className="w-3 h-3" /> 30,000+ Pembaca
-                            </span>
-                        </div>
+            {/* Soft Ambient Glows */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-100/40 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-50/60 rounded-full blur-[80px] translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
 
-                        <h3 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 font-serif">
-                            Ustaz Amar Mirza
-                        </h3>
-                        <p className="text-lg text-green-600 font-medium mb-6">
-                            Terbitan Dakwah Digital Network
-                        </p>
+            <div className="container mx-auto px-4 max-w-6xl relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-center">
 
-                        <div className="space-y-4 text-gray-600 leading-relaxed text-base">
-                            <p>
-                                Beliau merupakan pengasas <strong>BeDaie</strong> dan juga peserta rancangan realiti TV <strong>Astro Muallim Muda 2025</strong>.
-                            </p>
-                            <p>
-                                Dengan pengalaman membimbing lebih <strong>5,000 pelajar</strong> dari pelbagai latar belakang, beliau sangat memahami kekangan masyarakat moden untuk belajar agama dan menyelesaikan hutang solat.
-                            </p>
-                            <p>
-                                <span className="italic block border-l-4 border-green-500 pl-4 py-1 text-gray-500 mt-4 bg-gray-50 rounded-r-lg">
-                                    &quot;Visi kami mudah: Kami tak nak ada satu pun rumah di Malaysia yang tertinggal dari didikan agama. Panduan ini adalah sebahagian daripada usaha kecil kami untuk bantu anda kembali sujud dengan tenang.&quot;
+                    {/* --- LEFT COLUMN: The "Architectural" Image --- */}
+                    <div className="md:col-span-5 relative">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 30 }}
+                            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="relative mx-auto md:mx-0 max-w-[320px] md:max-w-none"
+                        >
+                            {/* Decorative Arch Border (Gold/Bronze) */}
+                            <div className="absolute inset-0 rounded-t-[10rem] rounded-b-3xl border border-yellow-600/20 translate-x-3 translate-y-3 z-0 bg-stone-100/50"></div>
+
+                            {/* Main Image Container (The Dome Mask) */}
+                            <div className="relative z-10 rounded-t-[10rem] rounded-b-3xl overflow-hidden shadow-2xl shadow-emerald-900/10 border-4 border-white aspect-[3/4] md:aspect-[4/5] bg-stone-200 group">
+                                <Image
+                                    src="/ustazamarmirza.JPG"
+                                    alt="Ustaz Amar Mirza"
+                                    fill
+                                    className="object-cover object-top hover:scale-105 transition-transform duration-1000 ease-out"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                />
+                                {/* Overlay Gradient for Depth */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/40 to-transparent opacity-60 pointer-events-none"></div>
+                            </div>
+
+                            {/* Floating "As Seen On" Badge */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.5 }}
+                                className="absolute bottom-8 -left-4 md:-left-12 bg-white p-4 rounded-xl shadow-xl shadow-black/5 border border-stone-100 flex items-center gap-3 z-20 max-w-[200px]"
+                            >
+                                <div className="bg-rose-100 p-2 rounded-lg text-rose-600">
+                                    <Tv className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] uppercase tracking-widest text-gray-400 font-semibold mb-0.5">Penampilan</p>
+                                    <p className="text-sm font-bold text-gray-900 leading-tight">Astro Muallim Muda</p>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    </div>
+
+                    {/* --- RIGHT COLUMN: The "Editorial" Content --- */}
+                    <div className="md:col-span-7 text-center md:text-left">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6 }}
+                        >
+                            {/* Authority Badges */}
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-6">
+                                <span className="px-3 py-1 bg-emerald-50 text-emerald-800 text-xs font-bold uppercase tracking-wider rounded-full border border-emerald-100 flex items-center gap-1.5">
+                                    <CheckCircle2 className="w-3.5 h-3.5" /> Bertauliah
                                 </span>
-                            </p>
-                        </div>
+                                <span className="px-3 py-1 bg-yellow-50 text-yellow-800 text-xs font-bold uppercase tracking-wider rounded-full border border-yellow-200 flex items-center gap-1.5">
+                                    <Star className="w-3.5 h-3.5" /> Founder BeDaie
+                                </span>
+                            </div>
 
-                        {/* Stats Row */}
-                        <div className="mt-8 grid grid-cols-3 gap-4 border-t border-gray-100 pt-6">
-                            <div>
-                                <h4 className="font-bold text-2xl text-gray-900">5,000+</h4>
-                                <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Pelajar Dibimbing</p>
+                            {/* Headlines */}
+                            <h2 className="text-green-600 font-bold tracking-widest text-sm uppercase mb-3">Penulis & Pembimbing</h2>
+                            <h3 className="text-4xl md:text-6xl font-bold text-slate-900 mb-6 font-serif leading-none tracking-tight">
+                                Ustaz Amar <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-800 to-teal-600">Mirza</span>
+                            </h3>
+
+                            {/* Editorial Quote */}
+                            <div className="relative mb-8 max-w-xl mx-auto md:mx-0">
+                                <Quote className="absolute -top-4 -left-6 w-10 h-10 text-emerald-100 -z-10 rotate-180" />
+                                <p className="text-xl md:text-2xl italic text-gray-700 font-serif leading-relaxed">
+                                    &quot;Visi kami mudah: Kami tak nak ada satu pun rumah di Malaysia yang tertinggal dari didikan agama.&quot;
+                                </p>
                             </div>
-                            <div>
-                                <h4 className="font-bold text-2xl text-gray-900">4.8/5</h4>
-                                <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Rating BeDaie</p>
+
+                            {/* Bio Copy */}
+                            <div className="space-y-5 text-gray-600 leading-relaxed text-base md:text-lg mb-10 max-w-prose mx-auto md:mx-0">
+                                <p>
+                                    Beliau merupakan personaliti TV yang dikenali menerusi rancangan <strong>Astro Muallim Muda 2025</strong> dan pengasas platform pendidikan Islam digital, <strong>BeDaie</strong>.
+                                </p>
+                                <p>
+                                    Dengan pengalaman membimbing lebih <strong>5,000 pelajar</strong>, beliau menggabungkan pendekatan tradisional buku dengan metodologi moden yang mudah difahami oleh masyarakat awam yang sibuk.
+                                </p>
                             </div>
-                            <div>
-                                <h4 className="font-bold text-2xl text-gray-900">100%</h4>
-                                <p className="text-xs text-gray-500 uppercase tracking-wider mt-1">Patuh Syariah</p>
+
+                            {/* Stats / Credentials Grid */}
+                            <div className="grid grid-cols-3 gap-6 border-t border-stone-200 pt-8 max-w-lg mx-auto md:mx-0">
+                                <div>
+                                    <div className="text-3xl font-bold text-gray-900 font-serif">5k+</div>
+                                    <div className="text-xs text-gray-500 uppercase tracking-wider mt-1 font-medium">Pelajar Dibimbing</div>
+                                </div>
+                                <div>
+                                    <div className="text-3xl font-bold text-gray-900 font-serif">4.8</div>
+                                    <div className="text-xs text-gray-500 uppercase tracking-wider mt-1 font-medium">Rating Purata</div>
+                                </div>
+                                <div>
+                                    <div className="text-3xl font-bold text-gray-900 font-serif">10th</div>
+                                    <div className="text-xs text-gray-500 uppercase tracking-wider mt-1 font-medium">Tahun Mengajar</div>
+                                </div>
                             </div>
-                        </div>
-                    </motion.div>
+                        </motion.div>
+                    </div>
+
                 </div>
             </div>
         </section>

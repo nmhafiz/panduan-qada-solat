@@ -1,138 +1,133 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Star } from "lucide-react";
-import Link from "next/link";
-
-const packages = [
-    {
-        id: 1,
-        pkgId: "solo",
-        name: "Pakej Jimat",
-        subtitle: "1 Unit Buku",
-        price: "49",
-        normalPrice: "89",
-        save: "40",
-        items: [
-            "1x Buku Panduan Qadha",
-            "Free Postage (Semenanjung)",
-        ],
-        popular: false,
-        buttonText: "Dapatkan Pakej Jimat",
-        delay: 0.2
-    },
-    {
-        id: 2,
-        pkgId: "combo",
-        name: "Pakej Combo",
-        subtitle: "2 Unit Buku + Ebook",
-        price: "59",
-        normalPrice: "178",
-        save: "119",
-        items: [
-            "2x Buku Panduan Qadha",
-            "BONUS: Ebook Panduan Solat",
-            "Free Postage (Semenanjung)",
-        ],
-        popular: true,
-        buttonText: "Dapatkan Pakej Combo",
-        delay: 0.4
-    },
-    {
-        id: 3,
-        pkgId: "family",
-        name: "Pakej Famili",
-        subtitle: "3 Unit Buku + Ebook",
-        price: "69",
-        normalPrice: "267",
-        save: "198",
-        items: [
-            "3x Buku Panduan Qadha",
-            "BONUS: Ebook Panduan Solat",
-            "Free Postage (Semenanjung)"
-        ],
-        popular: false,
-        buttonText: "Dapatkan Pakej Famili",
-        delay: 0.6
-    }
-];
+import { ShieldCheck, Lock } from "lucide-react";
+import Link from "next/link"; // Changed from 'next/scroll' to 'next/link' for anchor scrolling
 
 export default function PricingSection() {
     return (
-        <section id="pricing" className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[100vw] h-[500px] bg-green-50/50 blur-3xl -z-10 rounded-full"></div>
+        <section id="price" className="py-24 relative overflow-hidden bg-emerald-900">
+            {/* Ambient Background */}
+            <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-4xl bg-emerald-500/20 blur-[120px] rounded-full pointer-events-none"></div>
 
-            <div className="container mx-auto px-4 max-w-6xl relative z-10">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    className="text-center mb-16"
-                >
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-bold mb-6">
-                        <Star className="w-4 h-4 fill-current" />
-                        Harga Perkenalan Edisi {new Date().getFullYear()}
-                    </div>
-                    <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 font-serif">
-                        Mulakan Langkah <span className="text-green-600">Taubat</span> Sekarang
+            <div className="container mx-auto px-4 relative z-10">
+
+                {/* HEADLINE */}
+                <div className="text-center mb-12 text-white">
+                    <span className="inline-block py-1 px-3 rounded-full bg-emerald-800/50 border border-emerald-700 text-emerald-300 text-xs font-bold uppercase tracking-widest mb-4">
+                        Edisi Terhad 2026
+                    </span>
+                    <h2 className="text-3xl md:text-5xl font-bold font-serif mb-4 leading-tight">
+                        Jualan Cetakan <span className="text-emerald-400">Pertama</span>
                     </h2>
-                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                        Jangan bertangguh lagi. Pilih pakej yang sesuai dengan kemampuan anda. Pelaburan akhirat yang sangat berbaloi.
+                    <p className="text-emerald-100 max-w-xl mx-auto text-lg opacity-90">
+                        Harga akan dinaikkan kepada RM89 sebaik sahaja stok cetakan ini habis.
                     </p>
-                </motion.div>
+                </div>
 
-                <div className="grid md:grid-cols-3 gap-8 items-center">
-                    {packages.map((pkg) => (
-                        <motion.div
-                            key={pkg.id}
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ delay: pkg.delay }}
-                            className={`relative bg-white rounded-3xl border-2 ${pkg.popular ? 'border-green-500 shadow-2xl md:scale-105 z-20' : 'border-gray-100 shadow-xl z-10'} p-8 flex flex-col`}
-                        >
-                            {pkg.popular && (
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-green-500 text-white px-6 py-1 rounded-full text-sm font-bold shadow-lg flex items-center gap-2 whitespace-nowrap animate-pulse">
-                                    <Star className="w-4 h-4 fill-current" /> Paling Ramai Pilih
-                                </div>
-                            )}
+                {/* --- TICKET CARD --- */}
+                <motion.div
+                    initial={{ y: 50, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
+                    viewport={{ once: true }}
+                    className="max-w-lg mx-auto bg-white rounded-[2.5rem] p-2 shadow-2xl shadow-emerald-900/50 relative"
+                >
+                    {/* Inner Border Container */}
+                    <div className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden relative">
 
-                            <div className="text-center mb-8">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-1">{pkg.name}</h3>
-                                <p className="text-sm text-gray-500 mb-6">{pkg.subtitle}</p>
+                        {/* Top Banner (Limited Batch) */}
+                        <div className="bg-red-50 p-4 text-center border-b border-red-100">
+                            <div className="flex items-center justify-center gap-2 text-red-600 font-bold text-sm uppercase tracking-wider animate-pulse">
+                                <span className="relative flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                </span>
+                                Batch 1: Hampir Habis!
+                            </div>
+                        </div>
 
-                                <div className="flex items-center justify-center gap-2 mb-2">
-                                    <span className="text-gray-400 line-through text-lg">RM{pkg.normalPrice}</span>
-                                    <span className="text-red-500 font-bold text-sm bg-red-50 px-2 py-1 rounded">Jimat RM{pkg.save}</span>
-                                </div>
-                                <div className="text-5xl font-bold text-gray-900">
-                                    <span className="text-2xl align-top text-gray-500">RM</span>{pkg.price}
+                        <div className="p-8 md:p-10 text-center">
+
+                            {/* Product Title */}
+                            <h3 className="text-2xl font-bold text-gray-900 font-serif mb-2">
+                                Buku Panduan Qadha Solat
+                            </h3>
+                            <p className="text-gray-500 text-sm mb-8">
+                                + Ebook Solat Sunat <span className="text-red-500 text-[10px] font-bold uppercase tracking-wider ml-1">(Combo 2+)</span>
+                            </p>
+
+                            {/* PRICE DISPLAY */}
+                            <div className="flex justify-center items-end gap-3 mb-8">
+                                <span className="text-2xl text-gray-400 line-through font-bold mb-2">RM 158</span>
+                                <div className="group relative">
+                                    <span className="text-6xl md:text-7xl font-extrabold text-gray-900 tracking-tight">
+                                        49
+                                    </span>
+                                    <span className="absolute top-2 -right-6 text-lg font-bold text-emerald-600">RM</span>
                                 </div>
                             </div>
 
-                            <ul className="space-y-4 mb-8 flex-1">
-                                {pkg.items.map((item, idx) => (
-                                    <li key={idx} className="flex items-start gap-3">
-                                        <div className={`mt-1 rounded-full p-0.5 ${pkg.popular ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
-                                            <Check className="w-4 h-4" strokeWidth={3} />
-                                        </div>
-                                        <span className="text-gray-700 text-sm font-medium">{item}</span>
-                                    </li>
-                                ))}
-                            </ul>
+                            {/* PROGRESS BAR (SCARCITY) */}
+                            <div className="mb-10 text-left">
+                                <div className="flex justify-between text-xs font-bold text-gray-500 mb-2">
+                                    <span>Stok Terjual</span>
+                                    <span className="text-red-500">87%</span>
+                                </div>
+                                <div className="h-4 bg-gray-100 rounded-full overflow-hidden shadow-inner relative">
+                                    <motion.div
+                                        initial={{ width: "0%" }}
+                                        whileInView={{ width: "87%" }}
+                                        transition={{ duration: 1.5, ease: "circOut" }}
+                                        className="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full relative"
+                                    >
+                                        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(45deg,rgba(255,255,255,0.2)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.2)_50%,rgba(255,255,255,0.2)_75%,transparent_75%,transparent)] bg-[length:20px_20px]"></div>
+                                    </motion.div>
+                                </div>
+                                <p className="text-[10px] text-gray-400 mt-2 italic text-center">
+                                    *Stok fizikal adalah terhad. Siapa cepat dia dapat.
+                                </p>
+                            </div>
 
-                            <Link
-                                href={`/?pkg=${pkg.pkgId}#checkout`}
-                                className={`w-full block text-center py-4 rounded-xl font-bold transition-all duration-300 transform hover:-translate-y-1 ${pkg.popular ? 'bg-green-600 text-white hover:bg-green-700 shadow-green-200 shadow-lg' : 'bg-gray-900 text-white hover:bg-gray-800'}`}
-                            >
-                                {pkg.buttonText}
+                            {/* CTA BUTTON */}
+                            <Link href="#checkout" className="block w-full group relative">
+                                <div className="absolute -inset-1 bg-gradient-to-r from-emerald-600 to-teal-500 rounded-xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                                <button className="relative w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:to-teal-500 text-white font-bold text-xl py-5 rounded-xl shadow-lg transform transition hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+                                    <span>Dapatkan Sekarang</span>
+                                    <ShieldCheck className="w-5 h-5 opacity-80" />
+                                </button>
                             </Link>
 
-                            <p className="text-center text-xs text-gray-400 mt-4">
-                                Pembayaran selamat via FPX/Bizappay
+                            <p className="mt-4 text-xs text-gray-400 flex items-center justify-center gap-1">
+                                <Lock className="w-3 h-3" /> Secure Payment via Bizappay
                             </p>
-                        </motion.div>
-                    ))}
+
+                        </div>
+
+                        {/* Guarantee Strip */}
+                        <div className="bg-stone-50 p-4 border-t border-gray-100 flex justify-center items-center gap-4 text-gray-500 grayscale opacity-80 transform scale-90 flex-wrap">
+                            <span className="text-xs font-bold uppercase tracking-wider">FPX Online Banking</span>
+                            <div className="h-4 w-px bg-gray-300"></div>
+                            <span className="text-xs font-bold uppercase tracking-wider">GrabPay</span>
+                            <div className="h-4 w-px bg-gray-300"></div>
+                            <span className="text-xs font-bold uppercase tracking-wider">ShopeePay</span>
+                            <div className="h-4 w-px bg-gray-300"></div>
+                            <span className="text-xs font-bold uppercase tracking-wider">TnG eWallet</span>
+                            <div className="h-4 w-px bg-gray-300"></div>
+                            <span className="text-xs font-bold uppercase tracking-wider">COD (Barang Sampai Baru Bayar)</span>
+                        </div>
+                    </div>
+
+                </motion.div>
+
+                {/* ADDITIONAL TRUST (Money Back) */}
+                <div className="mt-12 text-center">
+                    <div className="inline-flex items-center gap-3 bg-emerald-800/30 backdrop-blur-sm px-6 py-3 rounded-full border border-emerald-500/30">
+                        <ShieldCheck className="w-6 h-6 text-emerald-400" />
+                        <span className="text-emerald-100 text-sm font-medium">Jaminan Wang Dikembalikan 30 Hari Jika Tidak Berpuas Hati</span>
+                    </div>
                 </div>
+
             </div>
         </section>
     );

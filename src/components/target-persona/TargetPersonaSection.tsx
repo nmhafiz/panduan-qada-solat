@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     CheckCircle2, XCircle,
     History, Calculator, Briefcase, HeartHandshake, Users, // Yes Icons
@@ -28,6 +28,32 @@ const notSuitableFor = [
 export default function TargetPersonaSection() {
     const [activeTab, setActiveTab] = useState<'suitable' | 'notSuitable'>('suitable');
 
+    // State for Smart Floating Pill
+    const [showFixedPill, setShowFixedPill] = useState(false);
+    const sectionRef = useRef<HTMLElement>(null);
+    const staticPillRef = useRef<HTMLDivElement>(null);
+
+    // Initial check and Scroll Listener to toggle Fixed Pill
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!staticPillRef.current || !sectionRef.current) return;
+
+            const staticRect = staticPillRef.current.getBoundingClientRect();
+            const sectionRect = sectionRef.current.getBoundingClientRect();
+
+            // Show fixed pill if:
+            // 1. We have scrolled PAST the static pill (top < 120 approx navbar height)
+            // 2. We are still inside the section (bottom > 150 to avoid it disappearing too late)
+            const scrolledPastStatic = staticRect.top < 110;
+            const stillInSection = sectionRect.bottom > 200;
+
+            setShowFixedPill(scrolledPastStatic && stillInSection);
+        };
+
+        window.addEventListener("scroll", handleScroll, { passive: true });
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     // Swipe Logic (Updated to use Drag)
     const onDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
         const swipeThreshold = 50;
@@ -40,22 +66,25 @@ export default function TargetPersonaSection() {
 
     return (
         <section
-            className="py-24 relative overflow-hidden transition-colors duration-700 bg-stone-50"
+            ref={sectionRef}
+            className="py-24 relative transition-colors duration-700 bg-stone-50"
         >
-            {/* Texture/Noise Overlay */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                {/* Texture/Noise Overlay */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
 
-            {/* 1. Mobile Immersive Background (Single Color) */}
-            <div className={`absolute inset-0 md:hidden transition-colors duration-700 ${activeTab === 'notSuitable' ? 'bg-rose-50' : 'bg-emerald-50/50'}`}></div>
+                {/* 1. Mobile Immersive Background (Single Color) */}
+                <div className={`absolute inset-0 md:hidden transition-colors duration-700 ${activeTab === 'notSuitable' ? 'bg-rose-50' : 'bg-emerald-50/50'}`}></div>
 
-            {/* 2. Desktop Split Background (Atmosphere) */}
-            <div className="hidden md:flex absolute inset-0 flex-row">
-                <div className="h-full w-1/2 bg-stone-100/50 order-1"></div> { /* Neutral Stone Left */}
-                <div className="h-full w-1/2 bg-emerald-50/30 order-2"></div> { /* Soft Emerald Right */}
+                {/* 2. Desktop Split Background (Atmosphere) */}
+                <div className="hidden md:flex absolute inset-0 flex-row">
+                    <div className="h-full w-1/2 bg-stone-100/50 order-1"></div> { /* Neutral Stone Left */}
+                    <div className="h-full w-1/2 bg-emerald-50/30 order-2"></div> { /* Soft Emerald Right */}
+                </div>
+
+                {/* Center Line visual */}
+                <div className="absolute inset-y-0 left-1/2 w-px bg-gradient-to-b from-transparent via-stone-300 to-transparent hidden md:block"></div>
             </div>
-
-            {/* Center Line visual */}
-            <div className="absolute inset-y-0 left-1/2 w-px bg-gradient-to-b from-transparent via-stone-300 to-transparent hidden md:block"></div>
 
             <div className="container mx-auto px-4 max-w-6xl relative z-10">
                 <motion.div
@@ -68,54 +97,62 @@ export default function TargetPersonaSection() {
                         Terus Terang. <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-700 to-red-600">Adakah Ini Diri Anda?</span>
                     </h2>
                     <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed hidden md:block font-medium">
-                        Kami tak mampu bantu semua orang. Sila cermin diri anda. Jika anda berada di sebelah <span className="font-bold text-emerald-700">KANAN</span>, kitab ini adalah jawapannya.
+                        Kami tak mampu bantu semua orang. Sila cermin diri anda. Jika anda berada di sebelah <span className="font-bold text-emerald-700">KANAN</span>, buku ini adalah jawapannya.
                     </p>
 
-                    {/* Mobile Tab Switcher (Sticky & Segmented Control) */}
-                    <div className="md:hidden sticky top-4 z-40 mx-auto max-w-[340px] mb-8">
-                        <div className="relative bg-white/90 backdrop-blur-md rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-stone-200 p-1.5 ring-1 ring-black/5">
-                            <button
-                                onClick={() => setActiveTab('suitable')}
-                                className={`flex-1 relative z-10 w-1/2 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'suitable' ? 'text-emerald-900 scale-105' : 'text-gray-400 scale-100'}`}
-                            >
-                                {activeTab === 'suitable' && (
-                                    <motion.div
-                                        layoutId="activeTab"
-                                        className="absolute inset-0 bg-emerald-100/90 rounded-full shadow-sm border border-emerald-200"
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    />
-                                )}
-                                <span className="relative z-20 flex items-center justify-center gap-2">
-                                    <CheckCircle2 className={`w-4 h-4 ${activeTab === 'suitable' ? 'text-emerald-600' : 'text-gray-300'}`} />
-                                    WAJIB Beli
-                                </span>
+                </motion.div>
+
+                {/* --- SMART FLOATING PILL SYSTEM --- */}
+
+                {/* 1. STATIC PILL (Initial View - Part of Flow) */}
+                {/* Changed from 'sticky' to 'relative' so it scrolls naturally with text initially */}
+                <div ref={staticPillRef} className={`md:hidden relative z-40 mx-auto max-w-[340px] mb-8 transition-opacity duration-300 ${showFixedPill ? 'opacity-0' : 'opacity-100'}`}>
+                    <div className="relative bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-white/50 p-1.5 ring-1 ring-black/5">
+                        <div className="flex relative z-10">
+                            <button onClick={() => setActiveTab('suitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'suitable' ? 'text-emerald-900' : 'text-gray-400'}`}>
+                                {activeTab === 'suitable' && <motion.div layoutId="staticTab" className="absolute inset-0 bg-emerald-100/90 rounded-full shadow-sm border border-emerald-200" />}
+                                <span className="relative z-20 flex items-center justify-center gap-2"><CheckCircle2 className={`w-4 h-4 ${activeTab === 'suitable' ? 'text-emerald-600' : 'text-gray-300'}`} /> WAJIB Beli</span>
                             </button>
-                            <button
-                                onClick={() => setActiveTab('notSuitable')}
-                                className={`flex-1 relative z-10 w-1/2 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'notSuitable' ? 'text-rose-900 scale-105' : 'text-gray-400 scale-100'}`}
-                            >
-                                {activeTab === 'notSuitable' && (
-                                    <motion.div
-                                        layoutId="activeTab"
-                                        className="absolute inset-0 bg-rose-100/90 rounded-full shadow-sm border border-rose-200"
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    />
-                                )}
-                                <span className="relative z-20 flex items-center justify-center gap-2">
-                                    <XCircle className={`w-4 h-4 ${activeTab === 'notSuitable' ? 'text-rose-600' : 'text-gray-300'}`} />
-                                    JANGAN Beli
-                                </span>
+                            <button onClick={() => setActiveTab('notSuitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'notSuitable' ? 'text-rose-900' : 'text-gray-400'}`}>
+                                {activeTab === 'notSuitable' && <motion.div layoutId="staticTab" className="absolute inset-0 bg-rose-100/90 rounded-full shadow-sm border border-rose-200" />}
+                                <span className="relative z-20 flex items-center justify-center gap-2"><XCircle className={`w-4 h-4 ${activeTab === 'notSuitable' ? 'text-rose-600' : 'text-gray-300'}`} /> JANGAN Beli</span>
                             </button>
                         </div>
                     </div>
+                </div>
 
-                    {/* Mobile Swipe Hint - Subtle Animation */}
-                    <div className="md:hidden mt-[-10px] mb-6 flex items-center justify-center gap-2 text-[10px] text-gray-400 font-medium animate-pulse tracking-widest uppercase">
-                        <motion.span animate={{ x: [-3, 3, -3] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-                            ← Swipe Kiri / Kanan →
-                        </motion.span>
-                    </div>
-                </motion.div>
+                {/* 2. FIXED FLOATING PILL (Appears when scrolled past) */}
+                <AnimatePresence>
+                    {showFixedPill && (
+                        <motion.div
+                            initial={{ y: -100, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: -100, opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                            className="md:hidden fixed top-24 left-0 right-0 z-[60] flex justify-center pointer-events-none"
+                        >
+                            <div className="pointer-events-auto bg-white/95 backdrop-blur-xl rounded-full shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] border border-white/60 p-1.5 ring-1 ring-black/5 mx-4 w-full max-w-[340px]">
+                                <div className="flex relative z-10">
+                                    <button onClick={() => setActiveTab('suitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'suitable' ? 'text-emerald-900' : 'text-gray-400'}`}>
+                                        {activeTab === 'suitable' && <motion.div layoutId="fixedTab" className="absolute inset-0 bg-emerald-100/90 rounded-full shadow-sm border border-emerald-200" />}
+                                        <span className="relative z-20 flex items-center justify-center gap-2"><CheckCircle2 className={`w-4 h-4 ${activeTab === 'suitable' ? 'text-emerald-600' : 'text-gray-300'}`} /> WAJIB Beli</span>
+                                    </button>
+                                    <button onClick={() => setActiveTab('notSuitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'notSuitable' ? 'text-rose-900' : 'text-gray-400'}`}>
+                                        {activeTab === 'notSuitable' && <motion.div layoutId="fixedTab" className="absolute inset-0 bg-rose-100/90 rounded-full shadow-sm border border-rose-200" />}
+                                        <span className="relative z-20 flex items-center justify-center gap-2"><XCircle className={`w-4 h-4 ${activeTab === 'notSuitable' ? 'text-rose-600' : 'text-gray-300'}`} /> JANGAN Beli</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Mobile Swipe Hint - Subtle Animation */}
+                <div className="md:hidden mt-[-10px] mb-6 flex items-center justify-center gap-2 text-[10px] text-gray-400 font-medium animate-pulse tracking-widest uppercase">
+                    <motion.span animate={{ x: [-3, 3, -3] }} transition={{ repeat: Infinity, duration: 1.5 }}>
+                        ← Swipe Kiri / Kanan →
+                    </motion.span>
+                </div>
 
                 {/* --- CONTENT AREA --- */}
 
@@ -187,13 +224,17 @@ export default function TargetPersonaSection() {
 function GhostColumn({ animateCards = true, isMobile = false }: { animateCards?: boolean, isMobile?: boolean }) {
     return (
         <div className={`space-y-4 md:space-y-6 flex flex-col h-full ${isMobile ? 'px-1' : ''}`}>
-            <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-2 md:mb-6 p-6 bg-white/40 md:bg-stone-100 rounded-3xl border border-stone-200/50 text-center md:text-left shadow-sm backdrop-blur-sm">
-                <div className="bg-rose-100/80 p-3 rounded-2xl shadow-inner rotate-3">
-                    <XCircle className="w-8 h-8 text-rose-600" />
+            {/* Header Card: Solid Warning Style for strong differentiation */}
+            <div className={`flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-2 md:mb-6 p-6 bg-rose-600 md:bg-rose-50 text-center md:text-left rounded-3xl border border-rose-600 md:border-rose-100 shadow-xl shadow-rose-900/10 md:shadow-sm relative overflow-hidden group`}>
+                {/* Visual Noise/Texture specific to header (Optional, kep simple for now) */}
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/5 pointer-events-none md:hidden"></div>
+
+                <div className="bg-white/20 md:bg-rose-100/80 p-3 rounded-2xl md:shadow-inner rotate-3 backdrop-blur-sm relative z-10">
+                    <XCircle className="w-8 h-8 text-white md:text-rose-600" />
                 </div>
-                <div>
-                    <h3 className="text-lg md:text-xl font-bold text-rose-800 leading-tight font-serif">JANGAN BELI Jika...</h3>
-                    <p className="text-sm text-rose-700/70 font-medium">Kami tak dapat bantu golongan ini.</p>
+                <div className="relative z-10">
+                    <h3 className="text-lg md:text-xl font-bold text-white md:text-rose-800 leading-tight font-serif">JANGAN BELI Jika...</h3>
+                    <p className="text-sm text-rose-100 md:text-rose-700/70 font-medium">Kami tak dapat bantu golongan ini.</p>
                 </div>
             </div>
 
@@ -214,14 +255,19 @@ function IdentityColumn({ animateCards = true, isMobile = false }: { animateCard
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-emerald-200/20 blur-[100px] -z-10 rounded-full hidden md:block"></div>
             )}
 
-            <div className={`flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-2 md:mb-6 p-6 ${isMobile ? 'bg-white shadow-xl shadow-emerald-900/5 border-emerald-100' : 'bg-white/80 md:bg-emerald-50'} rounded-3xl border border-emerald-100/50 shadow-sm text-center md:text-left backdrop-blur-md relative overflow-hidden`}>
-                <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-200/30 blur-2xl rounded-full -mr-10 -mt-10 pointer-events-none"></div>
-                <div className="bg-emerald-100 p-3 rounded-2xl shadow-inner -rotate-2 relative z-10">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-600" />
+            {/* Header Card: Solid Success Style */}
+            <div className={`flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-2 md:mb-6 p-6 bg-gradient-to-br from-emerald-600 to-teal-700 md:from-white/80 md:to-white/80 md:backdrop-blur-md text-center md:text-left rounded-3xl border border-emerald-600 md:border-emerald-100/50 shadow-xl shadow-emerald-900/20 md:shadow-sm relative overflow-hidden`}>
+                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-3xl rounded-full -mr-10 -mt-10 pointer-events-none md:hidden"></div>
+
+                {/* Desktop Decoration */}
+                <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-200/30 blur-2xl rounded-full -mr-10 -mt-10 pointer-events-none hidden md:block"></div>
+
+                <div className="bg-white/20 md:bg-emerald-100 p-3 rounded-2xl md:shadow-inner -rotate-2 relative z-10 backdrop-blur-sm">
+                    <CheckCircle2 className="w-8 h-8 text-white md:text-emerald-600" />
                 </div>
                 <div className="relative z-10">
-                    <h3 className="text-lg md:text-xl font-bold text-emerald-900 leading-tight font-serif">WAJIB DAPATKAN Jika...</h3>
-                    <p className="text-sm text-emerald-800/70 font-medium">Anda akan dapat manfaat sebenar.</p>
+                    <h3 className="text-lg md:text-xl font-bold text-white md:text-emerald-900 leading-tight font-serif">WAJIB DAPATKAN Jika...</h3>
+                    <p className="text-sm text-emerald-100 md:text-emerald-800/70 font-medium">Anda akan dapat manfaat sebenar.</p>
                 </div>
             </div>
 
@@ -253,7 +299,7 @@ function GhostCard({ text, icon: Icon, delay, animate = true }: { text: string, 
             initial={animate ? { opacity: 0, filter: "blur(4px)" } : { opacity: 1, filter: "blur(0px)" }}
             whileInView={animate ? { opacity: 1, filter: "blur(0px)" } : undefined}
             transition={{ delay, duration: 0.8 }}
-            className="flex flex-col md:flex-row items-center md:items-center gap-4 p-5 rounded-2xl border border-transparent hover:border-rose-200 hover:bg-white/80 transition-all duration-300 md:opacity-80 hover:opacity-100 group cursor-default text-center md:text-left bg-white/40 md:bg-white/50 backdrop-blur-sm"
+            className={`flex flex-col md:flex-row items-center md:items-center gap-4 p-5 rounded-2xl border border-transparent hover:border-rose-200 hover:bg-white/80 transition-all duration-300 md:opacity-80 hover:opacity-100 group cursor-default text-center md:text-left bg-white/40 md:bg-white/50 ${animate ? 'backdrop-blur-sm' : ''} md:backdrop-blur-sm`}
         >
             <div className="shrink-0 text-rose-300 group-hover:text-rose-500 transition-colors bg-stone-100 group-hover:bg-rose-50 p-3 rounded-xl">
                 <Icon className="w-6 h-6 md:w-5 md:h-5" />
