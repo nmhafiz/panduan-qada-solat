@@ -52,6 +52,12 @@ serve(async (req) => {
                     package_id: packageId,
                     description: description,
                     ref_id: refId,
+                    customer_data: {
+                        address: customer.address,
+                        city: customer.city,
+                        state: customer.state,
+                        postcode: customer.postcode
+                    }
                 },
             })
             .select()
@@ -96,7 +102,7 @@ serve(async (req) => {
         bizappBody.append('payer_name', customer.name);
         bizappBody.append('payer_email', customer.email);
         bizappBody.append('payer_phone', customer.phone);
-        bizappBody.append('webreturn_url', "https://panduan-qadha-solat-lz.netlify.app/download-success");
+        bizappBody.append('webreturn_url', "https://panduan-qadha-solat-lz.netlify.app/terima-kasih");
         bizappBody.append('callback_url', `${supabaseUrl}/functions/v1/qadasolat-webhook`);
         bizappBody.append('ext_reference', refId);
 
