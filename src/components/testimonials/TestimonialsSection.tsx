@@ -73,9 +73,12 @@ export default function TestimonialsSection() {
 
                 {/* Visual Trust Indicator */}
                 <div className="mt-12 text-center relative z-20">
-                    <p className="text-gray-400 text-sm flex items-center justify-center gap-2">
-                        <BadgeCheck className="w-4 h-4 text-emerald-500" />
-                        Semua testimoni adalah dari pelanggan verified.
+                    <p className="text-gray-400 text-sm flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2">
+                        <span className="flex items-center gap-2">
+                            <BadgeCheck className="w-4 h-4 text-emerald-500" />
+                            Kami tak sabar nak dengar cerita kejayaan anda pula.
+                        </span>
+                        <span className="font-semibold text-emerald-700">Mungkin anda testimoni kami yang seterusnya?</span>
                     </p>
                 </div>
             </div>
