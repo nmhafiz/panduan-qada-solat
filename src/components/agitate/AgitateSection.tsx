@@ -262,9 +262,9 @@ function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass,
             />
 
             <div className="relative h-56 overflow-hidden bg-black">
-                <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-10 opacity-90"></div>
-
                 <GlitchImage src={imageSrc} alt={title} isHovered={isHovered} isMobile={isMobile} />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-[#16181d] via-transparent to-transparent z-10 opacity-90"></div>
 
                 <div className="absolute top-4 left-4 z-20 bg-black/70 md:bg-black/40 md:backdrop-blur-md p-2 rounded-lg border border-white/10 md:border-white/5">
                     {isHeartbeat ? (
