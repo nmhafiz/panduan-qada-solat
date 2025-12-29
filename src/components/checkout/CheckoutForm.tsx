@@ -601,6 +601,7 @@ export default function CheckoutForm() {
                                 <div className="flex gap-1 opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all">
                                     <span className="text-[8px] font-bold border border-slate-200 px-1 rounded uppercase">DHL</span>
                                     <span className="text-[8px] font-bold border border-slate-200 px-1 rounded uppercase">Ninja</span>
+                                    <span className="text-[8px] font-bold border border-slate-200 px-1 rounded uppercase">J&T</span>
                                 </div>
                             </div>
                         </label>
@@ -628,7 +629,7 @@ export default function CheckoutForm() {
                                 <div className={`font-bold text-sm leading-tight mb-1 ${paymentMethod === 'online' ? 'text-gray-900' : 'text-gray-600'}`}>Online Banking</div>
                                 <div className="flex gap-1 opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all">
                                     <span className="text-[8px] font-bold border border-slate-200 px-1 rounded">FPX</span>
-                                    <span className="text-[8px] font-bold border border-slate-200 px-1 rounded">Card</span>
+                                    <span className="text-[8px] font-bold border border-slate-200 px-1 rounded">E-Wallet</span>
                                 </div>
                             </div>
                         </label>

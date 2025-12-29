@@ -28,46 +28,36 @@ export default function FloatingCTA() {
                     exit={{ opacity: 0, y: 100, scale: 0.9 }}
                     className="fixed bottom-6 left-4 right-4 z-[100] md:hidden"
                 >
-                    <div className="bg-emerald-950/90 backdrop-blur-xl border border-emerald-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-2xl p-4 overflow-hidden relative">
+                    <div className="bg-emerald-950/90 backdrop-blur-xl border border-emerald-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-2xl p-3 overflow-hidden relative">
                         {/* Shimmer Effect */}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_3s_infinite] pointer-events-none"></div>
 
-                        <div className="flex items-center justify-between gap-4 relative z-10">
-                            <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-0.5">
-                                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                                    <span className="text-[10px] uppercase tracking-widest font-bold text-emerald-400">
-                                        Edisi Terhad 2026
+                        <div className="flex items-center justify-between gap-3 relative z-10">
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-0.5 truncate">
+                                    <Sparkles className="w-3 h-3 text-amber-400 shrink-0" />
+                                    <span className="text-[9px] uppercase tracking-tighter font-black text-emerald-400 whitespace-nowrap">
+                                        Edisi 2026 • Jimat RM109
                                     </span>
                                 </div>
-                                <h4 className="text-white font-bold text-sm md:text-base leading-tight">
+                                <h4 className="text-white font-bold text-xs leading-none truncate mb-1">
                                     Selesaikan Hutang Solat
                                 </h4>
-                                <p className="text-emerald-400/70 text-[10px] font-medium italic">
-                                    *Pakej Cetakan Pertama: Jimat RM109
-                                </p>
+                                <div className="text-emerald-400 font-bold text-[10px] leading-tight flex items-center gap-1">
+                                    <span className="opacity-60 font-normal line-through">RM168</span>
+                                    <span>RM59</span>
+                                    <span className="bg-amber-400 text-amber-950 px-1 rounded-[2px] text-[8px] uppercase font-black ml-1">POPULAR</span>
+                                </div>
                             </div>
 
                             <motion.button
                                 onClick={() => document.getElementById('checkout')?.scrollIntoView({ behavior: 'smooth' })}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                animate={{
-                                    boxShadow: ["0px 0px 0px rgba(245,158,11,0)", "0px 0px 15px rgba(245,158,11,0.5)", "0px 0px 0px rgba(245,158,11,0)"]
-                                }}
-                                transition={{
-                                    boxShadow: { repeat: Infinity, duration: 2 }
-                                }}
-                                className="bg-gradient-to-r from-amber-400 to-amber-600 text-emerald-950 px-5 py-3 rounded-xl font-bold text-sm shadow-xl flex items-center gap-2 relative group overflow-hidden active:scale-95 transition-transform"
+                                className="bg-gradient-to-r from-amber-400 to-amber-600 text-emerald-950 px-4 py-2.5 rounded-xl font-bold text-[11px] shadow-xl flex items-center gap-1.5 shrink-0"
                             >
-                                <motion.span
-                                    animate={{ y: [0, -2, 0] }}
-                                    transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                                    className="whitespace-nowrap flex items-center gap-2"
-                                >
-                                    Tempah Sekarang
-                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                </motion.span>
+                                <span className="whitespace-nowrap">Tempah Sekarang</span>
+                                <ArrowRight className="w-3 h-3" />
                             </motion.button>
                         </div>
                     </div>
