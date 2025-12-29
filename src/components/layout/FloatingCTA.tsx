@@ -37,7 +37,7 @@ export default function FloatingCTA() {
                                 <div className="flex items-center gap-2 mb-0.5">
                                     <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                                     <span className="text-[10px] uppercase tracking-widest font-bold text-emerald-400">
-                                        Edisi Terhad {new Date().getFullYear()}
+                                        Edisi Terhad 2026
                                     </span>
                                 </div>
                                 <h4 className="text-white font-bold text-sm md:text-base leading-tight">
