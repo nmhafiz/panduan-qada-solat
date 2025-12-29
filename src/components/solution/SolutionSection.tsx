@@ -70,7 +70,7 @@ export default function SolutionSection() {
                             <motion.div
                                 animate={{ y: [0, -8, 0] }}
                                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                                className="absolute -bottom-8 -right-8 bg-white/90 backdrop-blur-md border border-amber-100 p-4 rounded-xl shadow-xl flex items-center gap-3 transform translate-z-20"
+                                className="absolute -bottom-6 right-2 md:-bottom-8 md:-right-8 bg-white/90 backdrop-blur-md border border-amber-100 p-3 md:p-4 rounded-xl shadow-xl flex items-center gap-3 transform translate-z-20 scale-90 md:scale-100"
                             >
                                 <div className="bg-amber-100 p-2 rounded-full">
                                     <Sparkles className="w-5 h-5 text-amber-600" />
