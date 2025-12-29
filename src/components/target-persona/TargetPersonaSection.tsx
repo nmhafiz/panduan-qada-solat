@@ -109,13 +109,13 @@ export default function TargetPersonaSection() {
                 <div ref={staticPillRef} className={`md:hidden relative z-40 mx-auto max-w-[340px] mb-8 transition-opacity duration-300 ${showFixedPill ? 'opacity-0' : 'opacity-100'}`}>
                     <div className="relative bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-white/50 p-1.5 ring-1 ring-black/5">
                         <div className="flex relative z-10">
-                            <button onClick={() => setActiveTab('suitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'suitable' ? 'text-emerald-900' : 'text-gray-400'}`}>
-                                {activeTab === 'suitable' && <motion.div layoutId="staticTab" className="absolute inset-0 bg-emerald-100/90 rounded-full shadow-sm border border-emerald-200" />}
-                                <span className="relative z-20 flex items-center justify-center gap-2"><CheckCircle2 className={`w-4 h-4 ${activeTab === 'suitable' ? 'text-emerald-600' : 'text-gray-300'}`} /> WAJIB Beli</span>
+                            <button onClick={() => setActiveTab('suitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'suitable' ? 'text-amber-950' : 'text-gray-400'}`}>
+                                {activeTab === 'suitable' && <motion.div layoutId="staticTab" className="absolute inset-0 bg-amber-400 rounded-full shadow-sm border border-amber-500" />}
+                                <span className="relative z-20 flex items-center justify-center gap-2"><CheckCircle2 className={`w-4 h-4 ${activeTab === 'suitable' ? 'text-amber-950' : 'text-gray-300'}`} /> WAJIB Beli</span>
                             </button>
-                            <button onClick={() => setActiveTab('notSuitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'notSuitable' ? 'text-rose-900' : 'text-gray-400'}`}>
-                                {activeTab === 'notSuitable' && <motion.div layoutId="staticTab" className="absolute inset-0 bg-rose-100/90 rounded-full shadow-sm border border-rose-200" />}
-                                <span className="relative z-20 flex items-center justify-center gap-2"><XCircle className={`w-4 h-4 ${activeTab === 'notSuitable' ? 'text-rose-600' : 'text-gray-300'}`} /> JANGAN Beli</span>
+                            <button onClick={() => setActiveTab('notSuitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'notSuitable' ? 'text-white' : 'text-gray-400'}`}>
+                                {activeTab === 'notSuitable' && <motion.div layoutId="staticTab" className="absolute inset-0 bg-slate-900 rounded-full shadow-sm border border-slate-800" />}
+                                <span className="relative z-20 flex items-center justify-center gap-2"><XCircle className={`w-4 h-4 ${activeTab === 'notSuitable' ? 'text-white' : 'text-gray-300'}`} /> JANGAN Beli</span>
                             </button>
                         </div>
                     </div>
@@ -133,13 +133,13 @@ export default function TargetPersonaSection() {
                         >
                             <div className="pointer-events-auto bg-white/95 backdrop-blur-xl rounded-full shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] border border-white/60 p-1.5 ring-1 ring-black/5 mx-4 w-full max-w-[340px]">
                                 <div className="flex relative z-10">
-                                    <button onClick={() => setActiveTab('suitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'suitable' ? 'text-emerald-900' : 'text-gray-400'}`}>
-                                        {activeTab === 'suitable' && <motion.div layoutId="fixedTab" className="absolute inset-0 bg-emerald-100/90 rounded-full shadow-sm border border-emerald-200" />}
-                                        <span className="relative z-20 flex items-center justify-center gap-2"><CheckCircle2 className={`w-4 h-4 ${activeTab === 'suitable' ? 'text-emerald-600' : 'text-gray-300'}`} /> WAJIB Beli</span>
+                                    <button onClick={() => setActiveTab('suitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'suitable' ? 'text-amber-950' : 'text-gray-400'}`}>
+                                        {activeTab === 'suitable' && <motion.div layoutId="fixedTab" className="absolute inset-0 bg-amber-400 rounded-full shadow-sm border border-amber-500" />}
+                                        <span className="relative z-20 flex items-center justify-center gap-2"><CheckCircle2 className={`w-4 h-4 ${activeTab === 'suitable' ? 'text-amber-950' : 'text-gray-300'}`} /> WAJIB Beli</span>
                                     </button>
-                                    <button onClick={() => setActiveTab('notSuitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'notSuitable' ? 'text-rose-900' : 'text-gray-400'}`}>
-                                        {activeTab === 'notSuitable' && <motion.div layoutId="fixedTab" className="absolute inset-0 bg-rose-100/90 rounded-full shadow-sm border border-rose-200" />}
-                                        <span className="relative z-20 flex items-center justify-center gap-2"><XCircle className={`w-4 h-4 ${activeTab === 'notSuitable' ? 'text-rose-600' : 'text-gray-300'}`} /> JANGAN Beli</span>
+                                    <button onClick={() => setActiveTab('notSuitable')} className={`flex-1 relative z-10 py-3 px-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === 'notSuitable' ? 'text-white' : 'text-gray-400'}`}>
+                                        {activeTab === 'notSuitable' && <motion.div layoutId="fixedTab" className="absolute inset-0 bg-slate-900 rounded-full shadow-sm border border-slate-800" />}
+                                        <span className="relative z-20 flex items-center justify-center gap-2"><XCircle className={`w-4 h-4 ${activeTab === 'notSuitable' ? 'text-white' : 'text-gray-300'}`} /> JANGAN Beli</span>
                                     </button>
                                 </div>
                             </div>

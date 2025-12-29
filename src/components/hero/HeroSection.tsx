@@ -150,7 +150,7 @@ export default function HeroSection() {
                                 transition={{ duration: 0.8 }}
                             >
                                 <span className="inline-block py-1.5 px-4 rounded-full bg-emerald-900/40 backdrop-blur-md border border-emerald-500/30 text-emerald-100 text-xs md:text-sm font-bold tracking-[0.2em] uppercase mb-4 shadow-lg shadow-emerald-900/20">
-                                    Edisi Terkini {new Date().getFullYear()}
+                                    Edisi Terkini 2026
                                 </span>
                                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] md:leading-tight font-serif tracking-tight text-white drop-shadow-lg text-balance">
                                     Selesaikan Hutang Solat <br className="hidden md:block" />
@@ -310,7 +310,7 @@ export default function HeroSection() {
                             >
                                 <div className="bg-[#052e16] rounded-full w-24 h-24 flex flex-col items-center justify-center border border-yellow-500/30 backdrop-blur-sm">
                                     <span className="text-[10px] text-yellow-400/80 uppercase tracking-widest mb-1">Edisi</span>
-                                    <span className="text-2xl font-serif font-bold text-white italic">{new Date().getFullYear()}</span>
+                                    <span className="text-2xl font-serif font-bold text-white italic">2026</span>
                                 </div>
                             </motion.div>
                         </motion.div>
