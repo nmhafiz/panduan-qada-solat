@@ -94,7 +94,7 @@ export default function AuthorBioSection() {
                             {/* Bio Copy */}
                             <div className="space-y-5 text-gray-600 leading-relaxed text-base md:text-lg mb-10 max-w-prose mx-auto md:mx-0">
                                 <p>
-                                    Beliau merupakan personaliti TV yang dikenali menerusi rancangan <strong>Astro Muallim Muda 2025</strong> dan pengasas platform pendidikan Islam digital, <strong>BeDaie</strong>.
+                                    Beliau merupakan personaliti TV yang dikenali menerusi rancangan <strong>Astro Muallim Muda 2026</strong> dan pengasas platform pendidikan Islam digital, <strong>BeDaie</strong>.
                                 </p>
                                 <p>
                                     Dengan pengalaman membimbing lebih <strong>5,000 pelajar</strong>, beliau menggabungkan pendekatan tradisional buku dengan metodologi moden yang mudah difahami oleh masyarakat awam yang sibuk.

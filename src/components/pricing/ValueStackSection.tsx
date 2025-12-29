@@ -35,7 +35,7 @@ export default function ValueStackSection() {
                             <Check className="w-6 h-6" />
                         </div>
                         <h3 className="font-mono text-gray-500 text-sm uppercase tracking-widest">OFFICIAL RECEIPT</h3>
-                        <p className="font-mono text-xs text-gray-400 mt-1">29/12/2025</p>
+                        <p className="font-mono text-xs text-gray-400 mt-1">29/12/2026</p>
                     </div>
 
                     {/* Items List */}

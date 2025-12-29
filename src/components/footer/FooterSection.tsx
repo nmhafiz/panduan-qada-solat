@@ -4,7 +4,7 @@ import Link from "next/link";
 import { MessageCircle } from "lucide-react";
 
 export default function FooterSection() {
-    const currentYear = new Date().getFullYear();
+    const currentYear = 2026;
 
     return (
         <footer className="bg-gray-900 text-white py-16 pb-32 md:pb-16 border-t border-gray-800">
