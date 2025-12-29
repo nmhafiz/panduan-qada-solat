@@ -57,7 +57,7 @@ function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHove
                 src={src}
                 alt={alt}
                 fill
-                className="object-cover relative z-10 transform transition-transform duration-1000 saturate-0 group-hover:saturate-100 scale-100 group-hover:scale-110"
+                className={`object-cover relative z-10 transform transition-transform duration-1000 ${isHovered ? 'saturate-100 scale-110' : 'saturate-0 scale-100'}`}
             />
         </div>
     );
@@ -107,34 +107,45 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
 
     // Auto-Sweep Animation Logic
     React.useEffect(() => {
-        if (isHovered || !divRef.current) return;
+        // If hovered manually, stop auto-sweep
+        if (isHovered) return;
 
-        // Animate the spotlight position automatically
+        // Auto-sweep mechanic for mobile visibility
         const controls = animate(0, 100, {
-            duration: 3,
+            duration: 4, // Slower sweep
             repeat: Infinity,
-            repeatType: "reverse",
+            repeatType: "mirror", // Back and forth
             ease: "easeInOut",
             onUpdate(val: number) {
                 if (divRef.current) {
                     const rect = divRef.current.getBoundingClientRect();
-                    // Sweep horizontally from 20% to 80% of width
-                    const x = (rect.width * 0.2) + (rect.width * 0.6 * (val / 100));
-                    const y = rect.height * 0.5; // Center vertically
+                    // Sweep horizontally from 30% to 70% of width
+                    const x = (rect.width * 0.3) + (rect.width * 0.4 * (val / 100));
+                    const y = rect.height * 0.5;
                     setPosition({ x, y });
-                    setOpacity(0.6); // Lower opacity for auto-mode
+
+                    // Periodic "Active" state during sweep
+                    if (val > 45 && val < 55) {
+                        setIsHovered(true); // Temporarily trigger glitch
+                    } else if (val < 10 || val > 90) {
+                        setIsHovered(false);
+                    }
                 }
             }
         });
 
-        return () => controls.stop();
-    }, [isHovered]);
+        // Cleanup
+        return () => {
+            controls.stop();
+            setIsHovered(false); // Ensure reset
+        };
+    }, []); // Run once on mount
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!divRef.current) return;
         const rect = divRef.current.getBoundingClientRect();
         setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-        setOpacity(1); // Full opacity on interaction
+        setOpacity(1);
     };
 
     const handleMouseEnter = () => {

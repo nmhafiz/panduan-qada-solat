@@ -248,15 +248,17 @@ function IdentityColumn({ animateCards = true }: { animateCards?: boolean }) {
 
 // --- ITEM CARD COMPONENTS ---
 
+// --- ITEM CARD COMPONENTS ---
+
 function GhostCard({ text, icon: Icon, delay, animate = true }: { text: string, icon: React.ElementType, delay: number, animate?: boolean }) {
     return (
         <motion.div
             initial={animate ? { opacity: 0, filter: "blur(4px)" } : { opacity: 1, filter: "blur(0px)" }}
             whileInView={animate ? { opacity: 1, filter: "blur(0px)" } : undefined}
             transition={{ delay, duration: 0.8 }}
-            className="flex flex-col md:flex-row items-center md:items-center gap-4 p-5 rounded-2xl border border-transparent hover:border-rose-200 hover:bg-white/80 transition-all duration-300 grayscale hover:grayscale-0 opacity-60 hover:opacity-100 group cursor-default text-center md:text-left bg-white/40 md:bg-transparent backdrop-blur-sm"
+            className="flex flex-col md:flex-row items-center md:items-center gap-4 p-5 rounded-2xl border border-transparent hover:border-rose-200 hover:bg-white/80 transition-all duration-300 md:opacity-80 hover:opacity-100 group cursor-default text-center md:text-left bg-white/40 md:bg-white/50 backdrop-blur-sm"
         >
-            <div className="shrink-0 text-gray-400 group-hover:text-rose-500 transition-colors bg-stone-100 group-hover:bg-rose-50 p-3 rounded-xl">
+            <div className="shrink-0 text-rose-300 group-hover:text-rose-500 transition-colors bg-stone-100 group-hover:bg-rose-50 p-3 rounded-xl">
                 <Icon className="w-6 h-6 md:w-5 md:h-5" />
             </div>
             <p className="text-base text-gray-500 font-medium group-hover:text-rose-800 transition-colors leading-relaxed">{text}</p>

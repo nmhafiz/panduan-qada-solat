@@ -162,7 +162,7 @@ function GlitchImage({ src, alt, isHovered }: { src: string; alt: string; isHove
                 src={src}
                 alt={alt}
                 fill
-                className="object-cover relative z-10 transform transition-transform duration-1000 saturate-0 group-hover:saturate-100 scale-100 group-hover:scale-110"
+                className={`object-cover relative z-10 transform transition-transform duration-1000 ${isHovered ? 'saturate-100 scale-110' : 'saturate-0 scale-100'}`}
             />
         </div>
     );
