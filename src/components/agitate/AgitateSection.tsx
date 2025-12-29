@@ -180,31 +180,19 @@ interface AgitateCardProps {
 function AgitateCard({ title, description, imageSrc, icon: Icon, iconColorClass, delay }: AgitateCardProps) {
     const [isHovered, setIsHovered] = useState(false);
     const cardRef = useRef(null);
-    const isInView = useInView(cardRef, { margin: "-50px" });
-
-    // Auto-Glitch effect for mobile/passive engagement
-    useEffect(() => {
-        if (!isInView) return;
-
-        const triggerGlitch = () => {
-            const nextDelay = Math.random() * 5000 + 3000; // Random interval 3s - 8s
-            const timer = setTimeout(() => {
-                setIsHovered(true);
-                setTimeout(() => setIsHovered(false), 300); // Short burst 300ms
-                triggerGlitch();
-            }, nextDelay);
-            return timer;
-        };
-
-        const timerId = triggerGlitch();
-        return () => clearTimeout(timerId);
-    }, [isInView]);
 
     return (
         <motion.div
             ref={cardRef}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ margin: "-30% 0px -30% 0px", amount: "some" }} // Center "Hotzone"
+            onViewportEnter={() => {
+                if (window.innerWidth < 768) setIsHovered(true);
+            }}
+            onViewportLeave={() => {
+                if (window.innerWidth < 768) setIsHovered(false);
+            }}
             transition={{ delay }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}

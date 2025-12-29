@@ -105,41 +105,9 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
     const [opacity, setOpacity] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
 
-    // Auto-Sweep Animation Logic
-    React.useEffect(() => {
-        // If hovered manually, stop auto-sweep
-        if (isHovered) return;
-
-        // Auto-sweep mechanic for mobile visibility
-        const controls = animate(0, 100, {
-            duration: 4, // Slower sweep
-            repeat: Infinity,
-            repeatType: "mirror", // Back and forth
-            ease: "easeInOut",
-            onUpdate(val: number) {
-                if (divRef.current) {
-                    const rect = divRef.current.getBoundingClientRect();
-                    // Sweep horizontally from 30% to 70% of width
-                    const x = (rect.width * 0.3) + (rect.width * 0.4 * (val / 100));
-                    const y = rect.height * 0.5;
-                    setPosition({ x, y });
-
-                    // Periodic "Active" state during sweep
-                    if (val > 45 && val < 55) {
-                        setIsHovered(true); // Temporarily trigger glitch
-                    } else if (val < 10 || val > 90) {
-                        setIsHovered(false);
-                    }
-                }
-            }
-        });
-
-        // Cleanup
-        return () => {
-            controls.stop();
-            setIsHovered(false); // Ensure reset
-        };
-    }, []); // Run once on mount
+    // Scroll-Linked Animation Logic (Mobile "Flashlight" Effect)
+    // When the card is in the center 40% of the viewport, it activates.
+    // No more random timers or infinite loops. It reacts to YOUR scrolling.
 
     const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         if (!divRef.current) return;
@@ -155,13 +123,21 @@ function ProblemCard({ title, description, imageSrc, icon: Icon, iconColorClass,
 
     const handleMouseLeave = () => {
         setIsHovered(false);
-        // Opacity will be handled by the effect re-engaging
     };
 
     return (
         <motion.div
             variants={variants}
             ref={divRef}
+            onViewportEnter={() => {
+                // Mobile: Activate when entering center zone
+                if (window.innerWidth < 768) setIsHovered(true);
+            }}
+            onViewportLeave={() => {
+                // Mobile: Deactivate when leaving
+                if (window.innerWidth < 768) setIsHovered(false);
+            }}
+            viewport={{ margin: "-30% 0px -30% 0px", amount: "some" }} // "Hotzone" is the middle 40%
             onMouseMove={handleMouseMove}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
