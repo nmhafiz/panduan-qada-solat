@@ -273,7 +273,7 @@ function IdentityCard({ text, sub, icon: Icon, delay, animate = true }: { text: 
             whileInView={animate ? { opacity: 1, y: 0 } : undefined}
             transition={{ delay, duration: 0.6, ease: "easeOut" }}
             whileHover={{ scale: 1.01, y: -2 }}
-            className="flex flex-col md:flex-row items-center md:items-start gap-4 p-5 md:p-6 bg-white rounded-2xl shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-12px_rgba(16,185,129,0.1)] border border-stone-100 hover:border-emerald-200 transition-all duration-300 group cursor-default relative overflow-hidden text-center md:text-left h-full"
+            className="flex flex-col md:flex-row items-center md:items-start gap-4 p-5 md:p-6 bg-white rounded-2xl shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-12px_rgba(16,185,129,0.1)] border border-stone-100 hover:border-emerald-200 transition-all duration-300 group cursor-default relative overflow-hidden text-center md:text-left"
         >
             {/* Side Accent line */}
             <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-400 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
