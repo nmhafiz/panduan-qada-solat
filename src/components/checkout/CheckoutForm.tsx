@@ -385,38 +385,40 @@ export default function CheckoutForm() {
                                     whileTap={{ scale: 0.99 }}
                                 >
                                     <label className={`
-                                        relative flex items-center justify-between p-5 rounded-2xl cursor-pointer transition-all duration-300
+                                        relative flex items-stretch p-0 rounded-2xl cursor-pointer transition-all duration-300 overflow-hidden
                                         ${isSelected
                                             ? 'bg-gradient-to-br from-emerald-900 to-teal-900 text-white shadow-lg shadow-emerald-900/30 border-2 border-transparent'
                                             : 'bg-white border-2 border-stone-100 hover:border-emerald-200 text-gray-600 shadow-sm hover:shadow-md'
                                         }
                                     `}>
-                                        <div className="flex items-center gap-4">
-                                            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${isSelected ? 'border-emerald-400' : 'border-gray-300'}`}>
+                                        {/* Info Section (Left) */}
+                                        <div className="flex-1 p-5 flex items-start gap-4">
+                                            <div className={`mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors shrink-0 ${isSelected ? 'border-emerald-400' : 'border-gray-300'}`}>
                                                 {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />}
                                             </div>
 
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <span className={`font-bold text-lg ${isSelected ? 'text-white' : 'text-gray-900'}`}>{pkg.name}</span>
+                                            <div className="flex-1">
+                                                <div className="flex flex-wrap items-center gap-2 mb-1">
+                                                    <span className={`font-bold text-lg leading-tight ${isSelected ? 'text-white' : 'text-gray-900'}`}>{pkg.name}</span>
                                                     {pkg.badge && (
-                                                        <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${isSelected ? 'bg-amber-400 text-amber-900' : 'bg-emerald-100 text-emerald-800'}`}>
+                                                        <span className={`text-[9px] uppercase font-black px-2 py-0.5 rounded-full whitespace-nowrap ${isSelected ? 'bg-amber-400 text-amber-900' : 'bg-emerald-100 text-emerald-800'}`}>
                                                             {pkg.badge}
                                                         </span>
                                                     )}
                                                 </div>
                                                 {pkgKey !== 'solo' && (
-                                                    <div className={`text-xs font-medium flex items-center gap-1.5 mt-1 ${isSelected ? 'text-emerald-300' : 'text-emerald-600'}`}>
-                                                        <Sparkles className="w-3 h-3" />
-                                                        Free Ebook Bonus (Bernilai RM99)
+                                                    <div className={`text-[11px] font-bold flex items-center gap-1.5 ${isSelected ? 'text-emerald-300' : 'text-emerald-600'}`}>
+                                                        <Sparkles className="w-3.5 h-3.5" />
+                                                        <span>BONUS: Ebook (RM99)</span>
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
 
-                                        <div className="text-right">
-                                            <div className={`font-bold text-2xl ${isSelected ? 'text-white' : 'text-emerald-700'}`}>RM{pkg.price}</div>
-                                            {isSelected && <div className="text-[10px] text-emerald-300 opacity-80">Harga Promo</div>}
+                                        {/* Price Sidebar (Right) */}
+                                        <div className={`w-28 flex flex-col items-center justify-center border-l transition-colors ${isSelected ? 'bg-white/10 border-white/10' : 'bg-gray-50 border-stone-100'}`}>
+                                            <div className={`font-black text-2xl ${isSelected ? 'text-white' : 'text-emerald-700'}`}>RM{pkg.price}</div>
+                                            {isSelected && <div className="text-[9px] font-bold uppercase tracking-tighter text-emerald-300 opacity-80">PROMO</div>}
                                         </div>
 
                                         <input
@@ -521,48 +523,49 @@ export default function CheckoutForm() {
                             </div>
                             <label className="absolute left-12 top-4 text-gray-500 transition-all duration-200 pointer-events-none peer-focus:-translate-y-3 peer-focus:scale-75 peer-focus:text-emerald-600 peer-[:not(:placeholder-shown)]:-translate-y-3 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:text-gray-500 origin-[0] font-medium z-10">Alamat Penuh</label>
                         </div>
-                        <div>
-                            <FloatingInput
-                                label="Poskod"
-                                name="postcode"
-                                inputMode="numeric"
-                                maxLength={5}
-                                value={formData.postcode}
-                                onChange={handlePostcodeChange}
-                                required
-                                autoComplete="postal-code"
-                            />
-                        </div>
-                        {/* City field removed as per request */}
-                        <div className="md:col-span-2 relative group">
-                            <select
-                                name="state"
-                                required
-                                value={formData.state}
-                                onChange={handleChange}
-                                autoComplete="address-level1"
-                                className="w-full p-4 border-2 border-stone-200 rounded-xl bg-white outline-none focus:border-emerald-500 font-medium h-14 appearance-none group-hover:border-emerald-200 transition-colors"
-                            >
-                                <option value="">Pilih Negeri</option>
-                                <option value="Johor">Johor</option>
-                                <option value="Kedah">Kedah</option>
-                                <option value="Kelantan">Kelantan</option>
-                                <option value="Melaka">Melaka</option>
-                                <option value="Negeri Sembilan">Negeri Sembilan</option>
-                                <option value="Pahang">Pahang</option>
-                                <option value="Perak">Perak</option>
-                                <option value="Perlis">Perlis</option>
-                                <option value="Pulau Pinang">Pulau Pinang</option>
-                                <option value="Sabah">Sabah</option>
-                                <option value="Sarawak">Sarawak</option>
-                                <option value="Selangor">Selangor</option>
-                                <option value="Terengganu">Terengganu</option>
-                                <option value="Kuala Lumpur">W.P. Kuala Lumpur</option>
-                                <option value="Labuan">W.P. Labuan</option>
-                                <option value="Putrajaya">W.P. Putrajaya</option>
-                            </select>
-                            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                                <ChevronRight className="w-5 h-5 rotate-90" />
+                        <div className="grid grid-cols-2 gap-4 md:col-span-2">
+                            <div>
+                                <FloatingInput
+                                    label="Poskod"
+                                    name="postcode"
+                                    inputMode="numeric"
+                                    maxLength={5}
+                                    value={formData.postcode}
+                                    onChange={handlePostcodeChange}
+                                    required
+                                    autoComplete="postal-code"
+                                />
+                            </div>
+                            <div className="relative group">
+                                <select
+                                    name="state"
+                                    required
+                                    value={formData.state}
+                                    onChange={handleChange}
+                                    autoComplete="address-level1"
+                                    className="w-full p-4 border-2 border-stone-200 rounded-xl bg-white outline-none focus:border-emerald-500 font-medium h-14 appearance-none group-hover:border-emerald-200 transition-colors text-sm"
+                                >
+                                    <option value="">Negeri</option>
+                                    <option value="Johor">Johor</option>
+                                    <option value="Kedah">Kedah</option>
+                                    <option value="Kelantan">Kelantan</option>
+                                    <option value="Melaka">Melaka</option>
+                                    <option value="Negeri Sembilan">Negeri Sembilan</option>
+                                    <option value="Pahang">Pahang</option>
+                                    <option value="Perak">Perak</option>
+                                    <option value="Perlis">Perlis</option>
+                                    <option value="Pulau Pinang">Pulau Pinang</option>
+                                    <option value="Sabah">Sabah</option>
+                                    <option value="Sarawak">Sarawak</option>
+                                    <option value="Selangor">Selangor</option>
+                                    <option value="Terengganu">Terengganu</option>
+                                    <option value="Kuala Lumpur">W.P. Kuala Lumpur</option>
+                                    <option value="Labuan">W.P. Labuan</option>
+                                    <option value="Putrajaya">W.P. Putrajaya</option>
+                                </select>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                    <ChevronRight className="w-4 h-4 rotate-90" />
+                                </div>
                             </div>
                         </div>
                     </div>
