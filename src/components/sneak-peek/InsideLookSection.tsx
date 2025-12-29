@@ -173,14 +173,31 @@ export default function InsideLookSection() {
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.1, duration: 0.5 }}
-                                className={`p-8 rounded-[2rem] bg-white border ${item.border} shadow-lg shadow-stone-200/40 hover:shadow-xl transition-shadow duration-300 flex flex-col items-start justify-between min-h-[240px] group`}
+                                className={`p-10 rounded-[2.5rem] bg-white border ${item.border} shadow-lg shadow-stone-200/40 hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 flex flex-col items-start min-h-[280px] group relative overflow-hidden`}
                             >
-                                <div className={`p-3 rounded-2xl ${item.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                                {/* Decorative Background Pattern */}
+                                <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity pointer-events-none">
+                                    <item.icon className="w-32 h-32 rotate-12" />
+                                </div>
+
+                                <div className={`p-4 rounded-2xl ${item.color} mb-6 group-hover:rotate-6 transition-transform duration-300 relative z-10 shadow-sm`}>
                                     <item.icon className="w-8 h-8" />
                                 </div>
-                                <div>
-                                    <h4 className="text-xl font-bold text-gray-900 mb-2 font-serif">{item.title}</h4>
-                                    <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
+
+                                <div className="relative z-10 space-y-3 flex-1">
+                                    <div>
+                                        <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-600 block mb-1 opacity-70">
+                                            {item.subtitle}
+                                        </span>
+                                        <h4 className="text-2xl font-bold text-gray-900 mb-2 font-serif leading-tight">{item.title}</h4>
+                                    </div>
+                                    <p className="text-base text-gray-500 leading-relaxed">{item.desc}</p>
+                                </div>
+
+                                {/* Practical Value Marker */}
+                                <div className="relative z-10 mt-6 pt-4 border-t border-stone-100 w-full flex items-center gap-2 text-[10px] font-bold text-emerald-700/60 uppercase tracking-widest">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50"></div>
+                                    Praktikal & Mudah Faham
                                 </div>
                             </motion.div>
                         ))}
