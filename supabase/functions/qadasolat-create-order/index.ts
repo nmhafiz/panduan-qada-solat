@@ -19,16 +19,14 @@ serve(async (req) => {
         const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
         const bizappayApiKey = Deno.env.get("BIZAPPAY_API_KEY");
         const bizappayCategoryCode = Deno.env.get("BIZAPPAY_CATEGORY_CODE") || "default";
-
-        if (!bizappayApiKey) {
-            throw new Error("Server Configuration Error: Missing BIZAPPAY_API_KEY");
-        }
+        const bizappApiToken = Deno.env.get("BIZAPP_API_TOKEN"); // For Bizapp HQ
 
         const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
         // 2. Parse Request
         const { customer, amount, packageId, description, quantity, paymentMethod, refId: incomingRefId, sessionId } = await req.json();
         const refId = incomingRefId || sessionId;
+        const isCOD = paymentMethod === 'cod';
 
         if (!customer || !amount) {
             return new Response(JSON.stringify({ error: "Missing required fields" }), {
@@ -38,7 +36,6 @@ serve(async (req) => {
         }
 
         // Logic: Calculate Total Books
-        // solo = 1 book, combo = 2 books, family = 3 books
         const bookMultipliers: Record<string, number> = {
             "solo": 1,
             "combo": 2,
@@ -47,8 +44,16 @@ serve(async (req) => {
         const booksPerSet = bookMultipliers[packageId] || 1;
         const totalBooks = (quantity || 1) * booksPerSet;
 
-        // 3. Create Order in Supabase (Pending)
-        // We use refId as temporary bill_id in case Bizappay fails
+        // Full address for Bizapp
+        const fullAddress = [
+            customer.address,
+            customer.city,
+            customer.postcode,
+            customer.state
+        ].filter(Boolean).join(', ') || 'N/A';
+
+        // 3. Create Order in Supabase
+        const orderStatus = isCOD ? "cod_pending" : "pending";
         const { data: order, error: orderError } = await supabase
             .from("qadasolat_orders")
             .insert({
@@ -56,13 +61,13 @@ serve(async (req) => {
                 customer_email: customer.email,
                 customer_phone: customer.phone,
                 amount: amount,
-                status: "pending",
-                bill_id: `TEMP-${refId}`,
+                status: orderStatus,
+                bill_id: isCOD ? `COD-${refId}` : `TEMP-${refId}`,
                 payment_metadata: {
                     package_id: packageId,
-                    qty_sets: quantity || 1,        // Qty of packages/sets
-                    qty_books: totalBooks,          // Total physical books
-                    payment_method: paymentMethod,  // 'cod' or 'online'
+                    qty_sets: quantity || 1,
+                    qty_books: totalBooks,
+                    payment_method: paymentMethod,
                     description: description,
                     ref_id: refId,
                     customer_data: {
@@ -81,13 +86,116 @@ serve(async (req) => {
             throw new Error("Failed to create order record");
         }
 
-        // 4.1 Get Bizappay Token (Required for V3)
-        const tokenRes = await fetch("https://bizappay.my/api/v3/token", {
-            method: "POST",
-            body: new FormData(), // API Key goes here in form-data
-        });
+        // ============================================
+        // COD FLOW: Skip Bizappay, Submit to Bizapp HQ
+        // ============================================
+        if (isCOD) {
+            console.log("COD Order - Submitting directly to Bizapp HQ...");
 
-        // Construct form data manually to ensure compatibility
+            let bizappOrderId = null;
+
+            if (bizappApiToken) {
+                try {
+                    // Secret Key with Currency Suffix
+                    const secretKey = bizappApiToken.endsWith("-MY") ? bizappApiToken : `${bizappApiToken}-MY`;
+                    const apiMethod = 'WOO_TRACK_SAVE_ORDER_MULTIPLE_NEW_BYSKU';
+
+                    // Generate 7-character Order ID
+                    const timestamp = Date.now().toString();
+                    const randomSuffix = Math.floor(Math.random() * 99).toString().padStart(2, '0');
+                    let wooOrderId = (timestamp + randomSuffix).slice(-7);
+
+                    // Build Form Data for Bizapp
+                    const bizappFormData = new URLSearchParams();
+                    bizappFormData.append('name', customer.name);
+                    bizappFormData.append('email', customer.email);
+                    bizappFormData.append('hpno', customer.phone);
+                    bizappFormData.append('address', fullAddress);
+                    bizappFormData.append('sellingprice', amount.toString());
+                    bizappFormData.append('postageprice', '0');
+                    bizappFormData.append('note', `COD - ${description} | Ref: ${refId}`);
+                    bizappFormData.append('woo_url', 'https://qadasolat.my');
+                    bizappFormData.append('woo_orderid', wooOrderId);
+
+                    // COD specific settings
+                    bizappFormData.append('woo_paymentgateway', 'Cash On Delivery (COD)');
+                    bizappFormData.append('woo_paymentgateway_id', 'cod');
+                    bizappFormData.append('set_paid', 'false'); // NOT PAID YET
+
+                    bizappFormData.append('woo_shipping_method', 'Pos Laju');
+                    bizappFormData.append('currency', 'MYR');
+                    bizappFormData.append('status', 'processing');
+                    bizappFormData.append('products_info[0][sku]', 'BUKUQADASOLAT');
+                    bizappFormData.append('products_info[0][quantity]', totalBooks.toString());
+
+                    const bizappUrl = `https://woo.bizapp.my/v2/wooapi.php?api_name=${apiMethod}&secretkey=${encodeURIComponent(secretKey)}`;
+
+                    console.log(`Sending COD order to Bizapp: ${wooOrderId}`);
+
+                    const res = await fetch(bizappUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: bizappFormData.toString(),
+                    });
+
+                    const text = await res.text();
+                    console.log("Bizapp Response:", text);
+
+                    try {
+                        const data = JSON.parse(text);
+                        if (data.status === 'success' && data.result?.[0]?.ID) {
+                            bizappOrderId = data.result[0].ID;
+                            console.log("✅ COD Order submitted to Bizapp! ID:", bizappOrderId);
+                        } else {
+                            console.error("Bizapp COD Error:", data.error_message || data);
+                        }
+                    } catch {
+                        console.error("Bizapp response not JSON:", text);
+                    }
+                } catch (err) {
+                    console.error("Bizapp COD Sync Failed:", err);
+                    // Don't throw - still allow order to proceed
+                }
+            } else {
+                console.warn("Skipping Bizapp sync: BIZAPP_API_TOKEN not set");
+            }
+
+            // Update order with Bizapp ID if available
+            if (bizappOrderId) {
+                await supabase
+                    .from("qadasolat_orders")
+                    .update({
+                        payment_metadata: {
+                            ...order.payment_metadata,
+                            bizapp_order_id: bizappOrderId,
+                        },
+                    })
+                    .eq("id", order.id);
+            }
+
+            // Return redirect to Thank You page for COD
+            const thankYouUrl = `https://qadasolat.my/terima-kasih?method=cod&ref=${refId}`;
+
+            return new Response(JSON.stringify({
+                success: true,
+                isCOD: true,
+                redirectUrl: thankYouUrl,
+                refId,
+                bizappOrderId
+            }), {
+                headers: { ...corsHeaders, "Content-Type": "application/json" },
+                status: 200,
+            });
+        }
+
+        // ============================================
+        // ONLINE BANKING FLOW: Create Bizappay Bill
+        // ============================================
+        if (!bizappayApiKey) {
+            throw new Error("Server Configuration Error: Missing BIZAPPAY_API_KEY");
+        }
+
+        // Get Bizappay Token
         const tokenFormData = new FormData();
         tokenFormData.append('apiKey', bizappayApiKey);
 
@@ -104,11 +212,10 @@ serve(async (req) => {
 
         const { token } = await tokenResponse.json();
 
-        // 4.2 Call Bizappay API (Create Bill)
-        // CRITICAL FIX: Bizappay V3 requires application/x-www-form-urlencoded and snake_case fields
+        // Create Bizappay Bill
         const bizappBody = new URLSearchParams();
         bizappBody.append('apiKey', bizappayApiKey);
-        bizappBody.append('category', bizappayCategoryCode); // Note: field is 'category', NOT 'categoryCode'
+        bizappBody.append('category', bizappayCategoryCode);
         bizappBody.append('name', description);
         bizappBody.append('description', `Order Ref: ${refId}`);
         bizappBody.append('amount', Number(amount).toFixed(2));
@@ -125,7 +232,7 @@ serve(async (req) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
-                "Authentication": token // No Bearer prefix
+                "Authentication": token
             },
             body: bizappBody,
         });
@@ -133,7 +240,6 @@ serve(async (req) => {
         if (!bizappRes.ok) {
             const errText = await bizappRes.text();
             console.error("Bizappay API Error:", bizappRes.status, errText);
-            // Mark order as failed
             await supabase.from("qadasolat_orders").update({ status: "failed" }).eq("id", order.id);
             throw new Error("Payment Gateway Request Failed");
         }
@@ -148,7 +254,7 @@ serve(async (req) => {
 
         const paymentUrl = `https://bizappay.my/${billCode}`;
 
-        // 5. Update Order with Real Bill ID
+        // Update Order with Real Bill ID
         await supabase
             .from("qadasolat_orders")
             .update({
@@ -160,7 +266,7 @@ serve(async (req) => {
             })
             .eq("id", order.id);
 
-        // 6. Return Success
+        // Return Payment URL for Online Banking
         return new Response(JSON.stringify({ success: true, paymentUrl, refId }), {
             headers: { ...corsHeaders, "Content-Type": "application/json" },
             status: 200,
