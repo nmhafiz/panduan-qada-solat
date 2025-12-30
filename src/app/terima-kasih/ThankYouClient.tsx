@@ -12,6 +12,7 @@ export default function ThankYouClient() {
 
     // COD Logic
     const isCOD = method === 'cod';
+    const refId = searchParams.get("ref");
 
 
     const isPending = status === "2";
@@ -130,6 +131,14 @@ export default function ThankYouClient() {
                             <span>Pastikan ada <strong>orang di rumah</strong> untuk terima barang.</span>
                         </li>
                     </ul>
+                </div>
+            )}
+
+            {/* Reference ID Card (For COD) */}
+            {isCOD && refId && (
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-4 mb-8 text-center">
+                    <p className="text-sm text-gray-500 mb-1">ID Rujukan Pesanan</p>
+                    <p className="text-2xl font-mono font-bold text-gray-900 tracking-wider">#{refId}</p>
                 </div>
             )}
 
