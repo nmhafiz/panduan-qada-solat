@@ -13,7 +13,7 @@ export default function ThankYouClient() {
     // COD Logic
     const isCOD = method === 'cod';
 
-    const isSuccess = status === "1";
+
     const isPending = status === "2";
     const isFailed = status === "3" || status === "4"; // 4 = No Action/Cancelled
 
