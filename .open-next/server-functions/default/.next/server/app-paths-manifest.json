@@ -1,0 +1,11 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/order/create/route": "app-edge-has-no-entrypoint",
+  "/api/order/draft/route": "app-edge-has-no-entrypoint",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/page": "app/page.js",
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/terima-kasih/page": "app/terima-kasih/page.js"
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bizapp Test Form</title>
+</head>
+<body>
+    <h1>Testing Bizapp POST</h1>
+    <!-- NOTE: Adding api_name and secretkey to action URL as per Node logic, 
+         but also as hidden fields just in case -->
+    <form action="https://woo.bizapp.my/v2/wooapi.php?api_name=WOO_TRACK_SAVE_ORDER_MULTIPLE_NEW_BYSKU&secretkey=-68f34ff8fe24ad6367ad6ec5d4ec1ddc" method="POST">
+        
+        <input type="hidden" name="name" value="Test Browser Bot">
+        <input type="hidden" name="email" value="browserbot@test.com">
+        <input type="hidden" name="hpno" value="0123456789">
+        <input type="hidden" name="address" value="Browser Test Address">
+        <input type="hidden" name="sellingprice" value="10.00">
+        <input type="hidden" name="postageprice" value="0.00">
+        <input type="hidden" name="note" value="Browser Test Note">
+        
+        <input type="hidden" name="woo_url" value="https://qadasolat.my">
+        <input type="hidden" name="woo_orderid" value="BROWSER-TEST-001">
+        <input type="hidden" name="woo_paymentgateway" value="Online Banking">
+        <input type="hidden" name="woo_paymentgateway_id" value="online_banking">
+        <input type="hidden" name="currency" value="MYR">
+        <input type="hidden" name="status" value="processing">
+        <input type="hidden" name="set_paid" value="true">
+        
+        <!-- Items array simulation for PHP -->
+        <input type="hidden" name="products_info[0][sku]" value="bukuqadasolat">
+        <input type="hidden" name="products_info[0][quantity]" value="1">
+
+        <button type="submit" id="submit-btn" style="padding: 20px; font-size: 20px;">SUBMIT TO BIZAPP</button>
+    </form>
+    
+    <script>
+        // Auto-submit after 1 second
+        setTimeout(() => {
+            document.getElementById('submit-btn').click();
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -82,16 +82,21 @@ serve(async (req) => {
             const formattedPhone = phone.startsWith("60") ? phone : `60${phone.replace(/^0+/, "")}`;
             const chatId = `${formattedPhone}@c.us`;
 
-            const message = `Salam ${name}, terima kasih kerana mendapatkan *Panduan Qadha Solat (Buku Rahsia)*.
+            // Conditional Message Based on Package
+            const packageId = order.payment_metadata?.package_id || 'combo'; // Default to combo if missing
+            const isSolo = packageId === 'solo';
 
-Alhamdulillah, tempahan anda telah disahkan. ✅
+            let message = `Salam ${name}, terima kasih kerana mendapatkan *Panduan Qadha Solat (Buku Rahsia)*.\n\nAlhamdulillah, tempahan anda telah disahkan. ✅\n\n`;
 
-📥 *Link Download eBook:*
+            if (isSolo) {
+                // Solo Package: No eBook, just physical book confirmation
+                message += `Buku fizikal anda akan diproses untuk penghantaran secepat mungkin.\n\nSila tunggu tracking number dari kami nanti.\n\nSebarang pertanyaan boleh balas mesej ini. Terima kasih!`;
+            } else {
+                // Combo/Family: Include eBook Link
+                message += `📥 *Link Download eBook:*
 https://panduan-qadha-solat-lz.netlify.app/download-success?id=${order.id}
-
-_(Sila klik link di atas untuk muat turun)_
-
-Sebarang pertanyaan boleh balas mesej ini. Terima kasih!`;
+_(Sila klik link di atas untuk muat turun)_\n\nBuku fizikal juga akan diproses dengan segera.\n\nSebarang pertanyaan boleh balas mesej ini. Terima kasih!`;
+            }
 
             try {
                 await fetch(`${wahaEndpoint}/api/sendText`, {
@@ -109,11 +114,106 @@ Sebarang pertanyaan boleh balas mesej ini. Terima kasih!`;
             }
         };
 
-        // 4. Helper: Submit Order to Bizapp (Mock Implementation for now)
-        // Need full documentation on Bizapp V3 Order API to implement correctly.
+        // 4. Helper: Submit Order to Bizapp (Exact MCP Client Logic)
         const submitToBizapp = async () => {
-            // Placeholder for future implementation
-            console.log("Submitting order to Bizapp HQ...");
+            const apiKey = Deno.env.get("BIZAPP_API_TOKEN");
+            if (!apiKey) {
+                console.log("Skipping Bizapp Sync: BIZAPP_API_TOKEN not set");
+                return;
+            }
+
+            try {
+                console.log("Syncing order to Bizapp HQ...");
+                const customer = order.payment_metadata?.customer_data || {};
+                const meta = order.payment_metadata || {};
+
+                // 1. Secret Key with Currency Suffix (-MY for MYR)
+                const secretKey = apiKey.endsWith("-MY") ? apiKey : `${apiKey}-MY`;
+                const apiMethod = 'WOO_TRACK_SAVE_ORDER_MULTIPLE_NEW_BYSKU';
+
+                // 2. Generate 7-character Order ID (EXACT MCP LOGIC)
+                const timestamp = Date.now().toString();
+                const randomSuffix = Math.floor(Math.random() * 99).toString().padStart(2, '0');
+                let wooOrderId = timestamp + randomSuffix;
+                if (wooOrderId.length > 7) {
+                    wooOrderId = wooOrderId.slice(-7); // Last 7 chars
+                }
+
+                // 3. Build Form Data (Body)
+                const formData = new URLSearchParams();
+                formData.append('name', order.customer_name || 'Pelanggan');
+                formData.append('email', order.customer_email || 'noemail@example.com');
+                formData.append('hpno', order.customer_phone || '0123456789'); // MCP uses 'hpno'
+
+                // Full Address (combine all parts)
+                const fullAddress = [
+                    customer.address,
+                    customer.city,
+                    customer.postcode,
+                    customer.state
+                ].filter(Boolean).join(', ') || 'N/A';
+                formData.append('address', fullAddress);
+
+                formData.append('sellingprice', order.amount.toString());
+                formData.append('postageprice', '0');
+
+                // Note includes package description + Bizappay payment URL
+                const bizappayUrl = meta.bizappay_url || `https://bizappay.my/${order.bill_id}`;
+                const noteText = [
+                    meta.description || 'Tempahan Buku Qada Solat',
+                    `Payment Link: ${bizappayUrl}`,
+                    `Ref: ${meta.ref_id || order.bill_id}`
+                ].join(' | ');
+                formData.append('note', noteText);
+
+                formData.append('woo_url', 'https://qadasolat.my');
+                formData.append('woo_orderid', wooOrderId);
+                formData.append('woo_paymentgateway', 'Online Banking');
+                formData.append('woo_paymentgateway_id', 'online_banking');
+
+                // Transaction ID for payment reference
+                formData.append('woo_payment_txn', order.bill_id || '');
+
+                // Shipping method (Pos Laju default for physical books)
+                formData.append('woo_shipping_method', 'Pos Laju');
+
+                formData.append('currency', 'MYR');
+                formData.append('status', 'processing');
+                formData.append('set_paid', 'true');
+
+                // UPPERCASE SKU (Validated via getproductlist)
+                formData.append('products_info[0][sku]', 'BUKUQADASOLAT');
+                formData.append('products_info[0][quantity]', (meta.qty_books || 1).toString());
+
+                // 4. Build URL (MCP Style: encodeURIComponent on secretKey)
+                const bizappUrl = `https://woo.bizapp.my/v2/wooapi.php?api_name=${apiMethod}&secretkey=${encodeURIComponent(secretKey)}`;
+
+                console.log(`Sending to Bizapp: ${bizappUrl.split('?')[0]} (ID: ${wooOrderId})`);
+
+                const res = await fetch(bizappUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData.toString(),
+                });
+
+                const text = await res.text();
+                console.log("Bizapp Raw Response:", text);
+
+                try {
+                    const data = JSON.parse(text);
+                    if (data.status === 'success' && data.result?.[0]?.ID) {
+                        console.log("✅ Bizapp Order Submitted! ID:", data.result[0].ID);
+                    } else {
+                        console.error("Bizapp API Error:", data.error_message || data);
+                    }
+                } catch {
+                    console.error("Bizapp Response not JSON:", text);
+                }
+            } catch (err) {
+                console.error("Bizapp Sync Failed:", err);
+            }
         };
 
         // Execute integrations concurrently

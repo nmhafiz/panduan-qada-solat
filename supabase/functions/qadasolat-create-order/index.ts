@@ -27,7 +27,7 @@ serve(async (req) => {
         const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
         // 2. Parse Request
-        const { customer, amount, packageId, description, refId: incomingRefId, sessionId } = await req.json();
+        const { customer, amount, packageId, description, quantity, paymentMethod, refId: incomingRefId, sessionId } = await req.json();
         const refId = incomingRefId || sessionId;
 
         if (!customer || !amount) {
@@ -36,6 +36,16 @@ serve(async (req) => {
                 headers: { ...corsHeaders, "Content-Type": "application/json" },
             });
         }
+
+        // Logic: Calculate Total Books
+        // solo = 1 book, combo = 2 books, family = 3 books
+        const bookMultipliers: Record<string, number> = {
+            "solo": 1,
+            "combo": 2,
+            "family": 3
+        };
+        const booksPerSet = bookMultipliers[packageId] || 1;
+        const totalBooks = (quantity || 1) * booksPerSet;
 
         // 3. Create Order in Supabase (Pending)
         // We use refId as temporary bill_id in case Bizappay fails
@@ -50,6 +60,9 @@ serve(async (req) => {
                 bill_id: `TEMP-${refId}`,
                 payment_metadata: {
                     package_id: packageId,
+                    qty_sets: quantity || 1,        // Qty of packages/sets
+                    qty_books: totalBooks,          // Total physical books
+                    payment_method: paymentMethod,  // 'cod' or 'online'
                     description: description,
                     ref_id: refId,
                     customer_data: {

@@ -1,0 +1,62 @@
+{
+  "name": "n8n-nodes-bizapp",
+  "version": "1.4.0",
+  "description": "⚠️ UNOFFICIAL third-party n8n community node for Bizapp integration. NOT affiliated with Bizapp. Use at your own risk.",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "bizapp",
+    "api",
+    "integration",
+    "order-management",
+    "woocommerce-integration",
+    "e-commerce",
+    "automation",
+    "unofficial",
+    "third-party",
+    "educational",
+    "malaysia",
+    "sahabat-xpert"
+  ],
+  "license": "MIT",
+  "homepage": "https://sahabatxpert.my",
+  "author": {
+    "name": "nmhafiz",
+    "email": "sifatsahabatnetwork@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nmhafiz/n8n-nodes-bizapp.git"
+  },
+  "engines": {
+    "node": ">=18.10",
+    "pnpm": ">=8.6"
+  },
+  "packageManager": "pnpm@8.6.2",
+  "main": "index.js",
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/BizappApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/Bizapp/Bizapp.node.js"
+    ]
+  },
+  "scripts": {
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.50.0",
+    "eslint-plugin-n8n-nodes-base": "^1.11.0",
+    "gulp": "^4.0.2",
+    "n8n-workflow": "*",
+    "prettier": "^2.7.1",
+    "typescript": "^4.8.4"
+  }
+}

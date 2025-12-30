@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, ShoppingBag } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -25,6 +25,24 @@ export default function Header() {
         { name: "Testimoni", href: "#testimonials" },
         { name: "FAQ", href: "#faq" },
     ];
+
+    // Smooth Scroll Helper - Prevents URL Hash Update
+    const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        e.preventDefault();
+        const targetId = href.replace("#", "");
+        const element = document.getElementById(targetId);
+
+        if (element) {
+            const headerOffset = 80;
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.scrollY - headerOffset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
+            });
+        }
+    };
 
     return (
         <>
@@ -52,12 +70,13 @@ export default function Header() {
                     {/* Desktop Navigation with Spotlight Effect */}
                     <div className="hidden md:flex items-center gap-2">
                         {navLinks.map((link, index) => (
-                            <Link
+                            <a
                                 key={link.name}
                                 href={link.href}
+                                onClick={(e) => handleSmoothScroll(e, link.href)}
                                 onMouseEnter={() => setHoveredIndex(index)}
                                 onMouseLeave={() => setHoveredIndex(null)}
-                                className={`relative px-4 py-2 text-sm font-medium transition-all hover:tracking-wide ${isScrolled ? "text-gray-600 hover:text-emerald-950" : "text-white/80 hover:text-white"
+                                className={`relative px-4 py-2 text-sm font-medium transition-all hover:tracking-wide cursor-pointer ${isScrolled ? "text-gray-600 hover:text-emerald-950" : "text-white/80 hover:text-white"
                                     }`}
                             >
                                 {hoveredIndex === index && (
@@ -69,16 +88,17 @@ export default function Header() {
                                 )}
                                 <span className="relative z-10">{link.name}</span>
                                 <span className={`absolute -bottom-1 left-0 w-0 h-[2px] transition-all duration-300 group-hover:w-full ${isScrolled ? 'bg-green-600' : 'bg-emerald-300'}`}></span>
-                            </Link>
+                            </a>
                         ))}
 
                         <div className={`h-4 w-[1px] mx-2 ${isScrolled ? 'bg-gray-200' : 'bg-white/20'}`}></div>
 
                         {/* CTA Button */}
-                        <Link
+                        <a
                             href="#pricing"
+                            onClick={(e) => handleSmoothScroll(e, "#pricing")}
                             className={`
-                                px-6 py-2 rounded-full font-bold text-sm transition-all transform hover:scale-110 hover:shadow-lg
+                                px-6 py-2 rounded-full font-bold text-sm transition-all transform hover:scale-110 hover:shadow-lg cursor-pointer
                                 ${isScrolled
                                     ? "bg-green-600 text-white hover:bg-green-700 shadow-md shadow-green-600/20"
                                     : "bg-white text-green-700 hover:bg-green-50"
@@ -86,7 +106,7 @@ export default function Header() {
                             `}
                         >
                             Dapatkan eBook
-                        </Link>
+                        </a>
                     </div>
 
                     {/* Mobile Toggle */}
@@ -114,26 +134,32 @@ export default function Header() {
 
                 <div className="flex flex-col items-center gap-8 relative z-10 w-full px-8">
                     {navLinks.map((link) => (
-                        <Link
+                        <a
                             key={link.name}
                             href={link.href}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="text-3xl font-bold text-white hover:text-emerald-300 transition-colors font-serif"
+                            onClick={(e) => {
+                                setIsMobileMenuOpen(false);
+                                handleSmoothScroll(e, link.href);
+                            }}
+                            className="text-3xl font-bold text-white hover:text-emerald-300 transition-colors font-serif cursor-pointer"
                         >
                             {link.name}
-                        </Link>
+                        </a>
                     ))}
 
                     <div className="w-16 h-[1px] bg-white/10 my-4"></div>
 
-                    <Link
+                    <a
                         href="#pricing"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="w-full max-w-xs bg-gradient-to-r from-amber-400 to-amber-600 text-emerald-950 py-4 rounded-xl font-bold text-xl tracking-widest uppercase shadow-lg shadow-amber-500/30 active:scale-95 transition-transform text-center flex items-center justify-center gap-2"
+                        onClick={(e) => {
+                            setIsMobileMenuOpen(false);
+                            handleSmoothScroll(e, "#pricing");
+                        }}
+                        className="w-full max-w-xs bg-gradient-to-r from-amber-400 to-amber-600 text-emerald-950 py-4 rounded-xl font-bold text-xl tracking-widest uppercase shadow-lg shadow-amber-500/30 active:scale-95 transition-transform text-center flex items-center justify-center gap-2 cursor-pointer"
                     >
                         <ShoppingBag className="w-5 h-5" />
                         Tempah Sekarang
-                    </Link>
+                    </a>
                 </div>
             </div>
         </>
