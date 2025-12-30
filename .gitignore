@@ -45,3 +45,7 @@ next-env.d.ts
 
 # Large Files
 public/assets/docs/*.pdf
+# Build outputs
+.open-next/
+wrangler.jsonc
+open-next.config.ts
