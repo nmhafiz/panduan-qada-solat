@@ -320,6 +320,8 @@ export default function CheckoutForm() {
             if (result.paymentUrl) {
                 // console.log("🔄 Redirecting to:", result.paymentUrl);
                 window.location.href = result.paymentUrl;
+            } else if (result.redirectUrl) {
+                window.location.href = result.redirectUrl;
             } else if (result.success) {
                 alert("Tempahan diterima! Semak email/WhatsApp anda.");
                 setIsSubmitting(false);
