@@ -111,7 +111,7 @@ export async function POST(request: Request) {
             formData.append('woo_orderid', wooOrderId);
             formData.append('woo_paymentgateway', 'Online Banking');
             formData.append('woo_paymentgateway_id', 'online_banking');
-            formData.append('woo_payment_txn', billCode);
+            formData.append('woo_payment_txn', billCode || '');
             formData.append('woo_shipping_method', 'Pos Laju');
             formData.append('currency', 'MYR');
             formData.append('status', 'processing');
