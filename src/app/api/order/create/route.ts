@@ -1,63 +1,217 @@
 import { NextResponse } from "next/server";
+import { getAdminClient } from "@/lib/pocketbase";
 
-export const runtime = 'edge';
+export const runtime = 'nodejs'; // Use nodejs for reliable async/await background tasks if needed, or edge if compatible. 
+// PocketBase JS SDK works best in Node for now due to formatting deps? Next.js edge is fine usually. 
+// Safest is nodejs for stability with external requests.
 
 export async function POST(request: Request) {
-    console.log("[DEBUG] API /api/order/create called");
-
     try {
         const body = await request.json();
-        console.log("[DEBUG] Request body parsed:", JSON.stringify(body));
+        const { customer, amount, packageId, description, quantity, paymentMethod, refId: incomingRefId, sessionId } = body;
+        const refId = incomingRefId || sessionId;
+        const isCOD = paymentMethod === 'cod';
 
-        // Proxy to Edge Function
-        const edgeFunctionUrl = "https://lstbqwnhxqrgsmlixkcw.supabase.co/functions/v1/qadasolat-create-order";
-        const anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxzdGJxd25oeHFyZ3NtbGl4a2N3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NTU4ODQsImV4cCI6MjA4MDMzMTg4NH0.N9esdEnfRBOFLA1OYux1MPtbcXQhs2Uww4nG6-vgbIM";
+        if (!customer || !amount) {
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        }
 
-        console.log("[DEBUG] Calling Edge Function:", edgeFunctionUrl);
+        // Initialize Admin Client (needed for writing 'status' if protected, or just safe practice)
+        const pb = await getAdminClient();
 
-        const response = await fetch(edgeFunctionUrl, {
+        // 1. Logic: Calculate Total Books
+        const bookMultipliers: Record<string, number> = { "solo": 1, "combo": 2, "family": 3 };
+        const booksPerSet = bookMultipliers[packageId] || 1;
+        const totalBooks = (quantity || 1) * booksPerSet;
+
+        const fullAddress = [customer.address, customer.city, customer.postcode, customer.state].filter(Boolean).join(', ') || 'N/A';
+
+        // 2. Create Order in PocketBase
+        const orderStatus = isCOD ? "cod_pending" : "pending";
+        const orderData = {
+            customer_name: customer.name,
+            customer_email: customer.email,
+            customer_phone: customer.phone,
+            amount: amount,
+            status: orderStatus,
+            bill_id: isCOD ? `COD-${refId}` : `TEMP-${refId}`,
+            payment_metadata: {
+                package_id: packageId,
+                qty_sets: quantity || 1,
+                qty_books: totalBooks,
+                payment_method: paymentMethod,
+                description: description,
+                ref_id: refId,
+                customer_data: {
+                    address: customer.address,
+                    city: customer.city,
+                    state: customer.state,
+                    postcode: customer.postcode
+                }
+            }
+        };
+
+        const record = await pb.collection('orders').create(orderData);
+        const orderId = record.id;
+
+        // ============================================
+        // COD FLOW
+        // ============================================
+        if (isCOD) {
+            // Run side-effects asynchronously (fire and forget pattern for speed, or await if critical)
+            // In Vercel/NextJS serverless, it's safer to await critical calls or use waitUntil (if edge).
+            // We will await them to ensure reliability.
+
+            const tasks = [];
+
+            // A. WhatsApp
+            const wahaEndpoint = process.env.WAHA_ENDPOINT;
+            if (wahaEndpoint) {
+                const formattedPhone = customer.phone.startsWith("60") ? customer.phone : `60${customer.phone.replace(/^0+/, "")}`;
+                const chatId = `${formattedPhone}@c.us`;
+                const message = `Salam ${customer.name}, terima kasih kerana mendapatkan *Panduan Qadha Solat (Buku Rahsia)* secara COD. 🚚\n\nTempahan anda: *#${refId}*\nPakej: *${packageId.toUpperCase()}*\nJumlah Perlu Dibayar: *RM${amount}*\n\nSila sediakan wang tunai secukupnya apabila posmen sampai nanti.\n\nNombor tracking akan dimaklumkan melalui SMS/WhatsApp oleh pihak kurier.\n\nTerima kasih!`;
+
+                tasks.push(fetch(`${wahaEndpoint}/api/sendText`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chatId, text: message, session: "Bot_Notifikasi" })
+                }).catch(e => console.error("WA COD Error", e)));
+            }
+
+            // B. Telegram
+            const tgToken = process.env.TELEGRAM_BOT_TOKEN;
+            const tgChat = process.env.TELEGRAM_CHAT_ID;
+            if (tgToken && tgChat) {
+                const tgMsg = `📦 *New Order (COD)*\nRay: *#${refId}*\nNama: ${customer.name}\nPhone: ${customer.phone}\nPakej: ${packageId.toUpperCase()}\nJumlah: RM${amount}\nLokasi: ${customer.state}`;
+                tasks.push(fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: tgChat, text: tgMsg, parse_mode: 'Markdown' })
+                }).catch(e => console.error("TG Error", e)));
+            }
+
+            // C. Sync to Bizapp HQ
+            const bizappToken = process.env.BIZAPP_API_TOKEN;
+            if (bizappToken) {
+                const secretKey = bizappToken.endsWith("-MY") ? bizappToken : `${bizappToken}-MY`;
+                const timestamp = Date.now().toString();
+                const randomSuffix = Math.floor(Math.random() * 99).toString().padStart(2, '0');
+                const wooOrderId = (timestamp + randomSuffix).slice(-7);
+
+                const formData = new URLSearchParams();
+                formData.append('name', customer.name);
+                formData.append('email', customer.email);
+                formData.append('hpno', customer.phone);
+                formData.append('address', fullAddress);
+                formData.append('sellingprice', amount.toString());
+                formData.append('postageprice', '0');
+                formData.append('note', `COD - ${description} | Ref: ${refId}`);
+                formData.append('woo_url', 'https://qadasolat.my');
+                formData.append('woo_orderid', wooOrderId);
+                formData.append('woo_paymentgateway', 'Cash On Delivery (COD)');
+                formData.append('woo_paymentgateway_id', 'cod');
+                formData.append('set_paid', 'false');
+                formData.append('woo_shipping_method', 'Pos Laju');
+                formData.append('currency', 'MYR');
+                formData.append('status', 'processing');
+                formData.append('products_info[0][sku]', 'BUKUQADASOLAT');
+                formData.append('products_info[0][quantity]', totalBooks.toString());
+
+                const bizappUrl = `https://woo.bizapp.my/v2/wooapi.php?api_name=WOO_TRACK_SAVE_ORDER_MULTIPLE_NEW_BYSKU&secretkey=${encodeURIComponent(secretKey)}`;
+
+                // We await this one to update DB with ID
+                const bizappTask = async () => {
+                    try {
+                        const res = await fetch(bizappUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: formData.toString()
+                        });
+                        const text = await res.text();
+                        const data = JSON.parse(text);
+                        if (data.status === 'success' && data.result?.[0]?.ID) {
+                            // Update PB
+                            const newBizappId = data.result[0].ID; // use specific var name
+                            await pb.collection('orders').update(orderId, { bizapp_order_id: newBizappId });
+                        }
+                    } catch (e) {
+                        console.error("Bizapp Sync Error", e);
+                    }
+                };
+                tasks.push(bizappTask());
+            }
+
+            // Execute all tasks
+            await Promise.allSettled(tasks);
+
+            return NextResponse.json({
+                success: true,
+                isCOD: true,
+                redirectUrl: `https://qadasolat.my/terima-kasih?method=cod&ref=${refId}`,
+                refId
+            });
+        }
+
+        // ============================================
+        // ONLINE BANKING FLOW
+        // ============================================
+        const bizappayKey = process.env.BIZAPPAY_API_KEY;
+        const bizappayCategory = process.env.BIZAPPAY_CATEGORY_CODE || "default";
+
+        if (!bizappayKey) {
+            throw new Error("Missing BIZAPPAY_API_KEY");
+        }
+
+        // 1. Get Token
+        const tokenFormData = new FormData();
+        tokenFormData.append('apiKey', bizappayKey);
+        const tokenRes = await fetch("https://bizappay.my/api/v3/token", { method: "POST", body: tokenFormData });
+        if (!tokenRes.ok) throw new Error("Bizappay Token Failed");
+        const { token } = await tokenRes.json();
+
+        // 2. Create Bill
+        // Callback URL needs to be updated to NEXTJS API
+        // Assuming deployment is qadasolat.my, change this to your production domain or env var
+        const origin = process.env.NEXT_PUBLIC_APP_URL || "https://qadasolat.my";
+        const callbackUrl = `${origin}/api/payment/webhook`;
+
+        const billBody = new URLSearchParams();
+        billBody.append('apiKey', bizappayKey);
+        billBody.append('category', bizappayCategory);
+        billBody.append('name', description);
+        billBody.append('description', `Order Ref: ${refId}`);
+        billBody.append('amount', Number(amount).toFixed(2));
+        billBody.append('payer_name', customer.name);
+        billBody.append('payer_email', customer.email);
+        billBody.append('payer_phone', customer.phone);
+        billBody.append('webreturn_url', `${origin}/terima-kasih`);
+        billBody.append('callback_url', callbackUrl);
+        billBody.append('ext_reference', refId);
+
+        const billRes = await fetch("https://bizappay.my/api/v3/bill/create", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${anonKey}`
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authentication": token
             },
-            body: JSON.stringify(body)
+            body: billBody
         });
 
-        console.log("[DEBUG] Edge Function response status:", response.status);
+        if (!billRes.ok) throw new Error("Bizappay Bill Creation Failed");
+        const billData = await billRes.json();
+        const billCode = billData.billCode || billData.id;
+        const paymentUrl = `https://bizappay.my/${billCode}`;
 
-        // Handle response
-        const contentType = response.headers.get("content-type");
-        console.log("[DEBUG] Response content-type:", contentType);
+        // 3. Update PB
+        await pb.collection('orders').update(orderId, {
+            bill_id: billCode,
+            payment_metadata: { ...orderData.payment_metadata, bizappay_url: paymentUrl }
+        });
 
-        let data;
-        if (contentType && contentType.includes("application/json")) {
-            data = await response.json();
-            console.log("[DEBUG] Response data:", JSON.stringify(data));
-        } else {
-            const text = await response.text();
-            console.error("[DEBUG] Edge Function Raw Error:", text);
-            return NextResponse.json({ success: false, error: "Backend returned non-JSON: " + text.substring(0, 200), status: response.status }, { status: response.status });
-        }
+        return NextResponse.json({ success: true, paymentUrl, refId });
 
-        if (!response.ok) {
-            console.error("[DEBUG] Edge Function Error:", data);
-            return NextResponse.json(data, { status: response.status });
-        }
-
-        return NextResponse.json(data);
-
-    } catch (error: unknown) {
-        console.error("[DEBUG] API Proxy Error:", error);
-        const errorMessage = error instanceof Error
-            ? `${error.name}: ${error.message}`
-            : typeof error === 'string'
-                ? error
-                : JSON.stringify(error);
-        return NextResponse.json({
-            success: false,
-            error: errorMessage || "Internal Server Error",
-            stack: error instanceof Error ? error.stack : undefined
-        }, { status: 500 });
+    } catch (error: any) {
+        console.error("Create Order Error:", error);
+        return NextResponse.json({ error: error.message || "Internal Error" }, { status: 500 });
     }
 }
