@@ -70,7 +70,19 @@ export async function POST(request: Request) {
         const tgToken = process.env.TELEGRAM_BOT_TOKEN;
         const tgChat = process.env.TELEGRAM_CHAT_ID;
         if (tgToken && tgChat) {
-            const tgMsg = `✅ *Payment Success*\nRay: *#${refId}*\nNama: ${customer_name}\nPhone: ${customer_phone}\nPakej: ${packageId.toUpperCase()}\nJumlah: RM${amount}\nGateway: Bizappay`;
+            const tgMsg = `✅ *Payment Success*
+Ref: \`${refId}\`
+Nama: ${customer_name}
+Phone: ${customer_phone}
+Email: ${customer_email}
+Pakej: *${packageId.toUpperCase()}*
+Jumlah: *RM${amount}*
+Gateway: Bizappay
+
+📍 *Alamat:*
+${meta.customer_data?.address || ''}
+${meta.customer_data?.postcode || ''} ${meta.customer_data?.city || ''}
+${meta.customer_data?.state || ''}`;
             tasks.push(fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
