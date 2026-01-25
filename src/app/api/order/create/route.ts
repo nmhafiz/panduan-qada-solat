@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminClient } from "@/lib/pocketbase";
 
-export const runtime = 'nodejs'; // Use nodejs for reliable async/await background tasks if needed, or edge if compatible. 
-// PocketBase JS SDK works best in Node for now due to formatting deps? Next.js edge is fine usually. 
-// Safest is nodejs for stability with external requests.
+export const runtime = 'edge'; // Cloudflare Pages requires Edge Runtime
 
 export async function POST(request: Request) {
     try {
