@@ -73,7 +73,7 @@ export async function POST(request: Request) {
                 const message = `Salam ${customer.name}, terima kasih kerana mendapatkan *Panduan Qadha Solat (Buku Rahsia)* secara COD. 🚚\n\nTempahan anda: *#${refId}*\nPakej: *${packageId.toUpperCase()}*\nJumlah Perlu Dibayar: *RM${amount}*\n\nSila sediakan wang tunai secukupnya apabila posmen sampai nanti.\n\nNombor tracking akan dimaklumkan melalui SMS/WhatsApp oleh pihak kurier.\n\nTerima kasih!`;
 
                 const wahaKey = process.env.WAHA_API_KEY;
-                const headers: any = { "Content-Type": "application/json" };
+                const headers: Record<string, string> = { "Content-Type": "application/json" };
                 if (wahaKey) headers["X-Api-Key"] = wahaKey;
 
                 tasks.push(fetch(`${wahaEndpoint}/api/sendText`, {

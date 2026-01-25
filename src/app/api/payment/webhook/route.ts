@@ -62,7 +62,7 @@ export async function POST(request: Request) {
             }
 
             const wahaKey = process.env.WAHA_API_KEY;
-            const headers: any = { "Content-Type": "application/json" };
+            const headers: Record<string, string> = { "Content-Type": "application/json" };
             if (wahaKey) headers["X-Api-Key"] = wahaKey;
 
             tasks.push(fetch(`${wahaEndpoint}/api/sendText`, {
