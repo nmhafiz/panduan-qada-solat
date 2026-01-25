@@ -59,9 +59,13 @@ export async function POST(request: Request) {
                 message += `📥 *Link Download eBook:* https://qadasolat.my/download-success?id=${order.id}&method=online\n\nBuku fizikal juga akan diproses dengan segera.`;
             }
 
+            const wahaKey = process.env.WAHA_API_KEY;
+            const headers: any = { "Content-Type": "application/json" };
+            if (wahaKey) headers["X-Api-Key"] = wahaKey;
+
             tasks.push(fetch(`${wahaEndpoint}/api/sendText`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify({ chatId, text: message, session: "Bot_Notifikasi" })
             }).catch(console.error));
         }
