@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminClient } from "@/lib/pocketbase";
+import { sendEmail, generateOrderEmailHtml } from "@/lib/mail";
 
 export const runtime = 'edge';
 
@@ -149,6 +150,27 @@ ${meta.customer_data?.state || ''}`;
                 } catch { }
             }).catch(console.error));
         }
+
+        // D. Email (MailerSend)
+        // Check Package Type for eBook link
+        // Jimat/Solo = NO eBook. Combo/Family = YES eBook.
+        const showEbook = (packageId !== 'solo');
+        const emailHtml = generateOrderEmailHtml(
+            customer_name,
+            refId,
+            amount,
+            packageId,
+            false, // Not COD (Paid)
+            showEbook,
+            order.id
+        );
+
+        tasks.push(sendEmail({
+            toEmail: customer_email,
+            toName: customer_name,
+            subject: `Resit Pembayaran - Panduan Qada Solat #${refId}`,
+            html: emailHtml
+        }));
 
         await Promise.allSettled(tasks);
 

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminClient } from "@/lib/pocketbase";
+import { sendEmail, generateOrderEmailHtml } from "@/lib/mail";
 
 export const runtime = 'edge'; // Cloudflare Pages requires Edge Runtime
 
@@ -156,6 +157,23 @@ ${customer.state}`;
                 };
                 tasks.push(bizappTask());
             }
+
+            // D. Email (MailerSend)
+            const emailHtml = generateOrderEmailHtml(
+                customer.name,
+                refId,
+                amount,
+                packageId,
+                true, // isCOD
+                false // no eBook for COD
+            );
+
+            tasks.push(sendEmail({
+                toEmail: customer.email,
+                toName: customer.name,
+                subject: `Order COD Termaklum #${refId}`,
+                html: emailHtml
+            }));
 
             // Execute all tasks
             await Promise.allSettled(tasks);
