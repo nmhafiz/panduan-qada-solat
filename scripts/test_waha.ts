@@ -43,6 +43,43 @@ async function testWaha() {
     } catch (e) {
         console.error("❌ Connection Error:", e);
     }
+
+    try {
+        // 2. Send Test Message (POST /api/sendText)
+        console.log("\nAttempting to send test message...");
+        const sendUrl = `${endpoint}/api/sendText`;
+        const headers: any = {
+            "Content-Type": "application/json",
+            "X-Api-Key": apiKey
+        };
+
+        // Target format: 60136073177@c.us
+        const targetPhone = "60136073177";
+        const chatId = `${targetPhone}@c.us`;
+        const payload = {
+            chatId: chatId,
+            text: "🔍 Test Message from Backend Debugger. If you receive this, WAHA is working!",
+            session: session
+        };
+
+        const res = await fetch(sendUrl, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            console.log(`❌ Send Failed: ${res.status} ${res.statusText}`);
+            console.log(await res.text());
+        } else {
+            const data = await res.json();
+            console.log("✅ Message Sent Successfully!");
+            console.log(JSON.stringify(data, null, 2));
+        }
+
+    } catch (e) {
+        console.error("❌ Send Error:", e);
+    }
 }
 
 testWaha();

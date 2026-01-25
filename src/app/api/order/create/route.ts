@@ -65,7 +65,9 @@ export async function POST(request: Request) {
             // A. WhatsApp
             const wahaEndpoint = process.env.WAHA_ENDPOINT;
             if (wahaEndpoint) {
-                const formattedPhone = customer.phone.startsWith("60") ? customer.phone : `60${customer.phone.replace(/^0+/, "")}`;
+                // Sanitize phone: remove non-numeric chars
+                const rawPhone = customer.phone.replace(/\D/g, '');
+                const formattedPhone = rawPhone.startsWith("60") ? rawPhone : `60${rawPhone.replace(/^0+/, "")}`;
                 const chatId = `${formattedPhone}@c.us`;
                 const message = `Salam ${customer.name}, terima kasih kerana mendapatkan *Panduan Qadha Solat (Buku Rahsia)* secara COD. 🚚\n\nTempahan anda: *#${refId}*\nPakej: *${packageId.toUpperCase()}*\nJumlah Perlu Dibayar: *RM${amount}*\n\nSila sediakan wang tunai secukupnya apabila posmen sampai nanti.\n\nNombor tracking akan dimaklumkan melalui SMS/WhatsApp oleh pihak kurier.\n\nTerima kasih!`;
 

@@ -49,7 +49,8 @@ export async function POST(request: Request) {
         // A. WhatsApp
         const wahaEndpoint = process.env.WAHA_ENDPOINT;
         if (wahaEndpoint) {
-            const formattedPhone = customer_phone.startsWith("60") ? customer_phone : `60${customer_phone.replace(/^0+/, "")}`;
+            const rawPhone = customer_phone.replace(/\D/g, '');
+            const formattedPhone = rawPhone.startsWith("60") ? rawPhone : `60${rawPhone.replace(/^0+/, "")}`;
             const chatId = `${formattedPhone}@c.us`;
             let message = `Salam ${customer_name}, terima kasih kerana mendapatkan *Panduan Qadha Solat (Buku Rahsia)*.\n\nAlhamdulillah, bayaran anda telah disahkan. ✅\n\n`;
 
