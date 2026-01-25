@@ -90,6 +90,7 @@ Nama: ${customer.name}
 Phone: ${customer.phone}
 Email: ${customer.email}
 Pakej: *${packageId.toUpperCase()}*
+Kuantiti: *${quantity || 1} Set*
 Jumlah: *RM${amount}*
 
 📍 *Alamat:*

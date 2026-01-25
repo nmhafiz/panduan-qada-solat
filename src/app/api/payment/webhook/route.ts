@@ -80,6 +80,7 @@ Nama: ${customer_name}
 Phone: ${customer_phone}
 Email: ${customer_email}
 Pakej: *${packageId.toUpperCase()}*
+Kuantiti: *${meta.qty_sets || 1} Set*
 Jumlah: *RM${amount}*
 Gateway: Bizappay
 
