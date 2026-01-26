@@ -6,6 +6,18 @@ import { ChevronDown, HelpCircle } from "lucide-react";
 
 const faqs = [
     {
+        question: "Apa itu Qadha Solat? (Penting)",
+        answer: "Qadha solat bermaksud menggantikan solat fardhu yang ditinggalkan (sama ada sengaja atau tidak sengaja) selepas berlalunya waktu solat tersebut. Ia berbeza dengan Solat Jamak/Qasar."
+    },
+    {
+        question: "Wajibkah Qadha Solat yang tertinggal lama?",
+        answer: "Mengikut Jumhur Ulama (Majoriti) termasuk Mazhab Syafi'i, Maliki, Hanafi, dan Hanbali - WAJIB mengqadha semua solat fardhu yang ditinggalkan walaupun ia berlaku bertahun-tahun lamanya. Ia dikira sebagai hutang dengan Allah yang mesti dilunaskan segera."
+    },
+    {
+        question: "Bagaimana cara kira jumlah solat yang tertinggal?",
+        answer: "Dalam buku ini, kami sediakan 'Sistem Log Mufashil' dan formula mudah untuk anda anggar jumlah tahun yang tertinggal. Anda tak perlu ingat setiap hari, cukup sekadar anggaran yakin (Ghalib ad-Zhan)."
+    },
+    {
         question: "Boleh bayar masa barang sampai (COD)?",
         answer: "Boleh, tiada masalah. Kami menggunakan khidmat kurier DHL untuk barang sampai baru anda bayar. Cuma pilih 'COD' di borang tempahan."
     },

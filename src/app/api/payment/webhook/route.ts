@@ -131,7 +131,7 @@ ${meta.customer_data?.state || ''}`;
             formData.append('woo_paymentgateway', 'Online Banking');
             formData.append('woo_paymentgateway_id', 'online_banking');
             formData.append('woo_payment_txn', billCode || '');
-            formData.append('woo_shipping_method', 'Pos Laju');
+            formData.append('woo_shipping_method', 'DHL');
             formData.append('currency', 'MYR');
             formData.append('status', 'processing');
             formData.append('set_paid', 'true'); // PAID
@@ -168,7 +168,7 @@ ${meta.customer_data?.state || ''}`;
         tasks.push(sendEmail({
             toEmail: customer_email,
             toName: customer_name,
-            subject: `Resit Pembayaran - Panduan Qada Solat #${refId}`,
+            subject: `🎉 Pembayaran Berjaya! Sila Muat Turun eBook Anda`,
             html: emailHtml
         }));
 

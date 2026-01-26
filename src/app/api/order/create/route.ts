@@ -33,6 +33,7 @@ export async function POST(request: Request) {
             customer_phone: customer.phone,
             amount: amount,
             status: orderStatus,
+            created_at: new Date().toISOString(),
             bill_id: isCOD ? `COD-${refId}` : `TEMP-${refId}`,
             payment_metadata: {
                 package_id: packageId,
@@ -128,7 +129,7 @@ ${customer.state}`;
                 formData.append('woo_paymentgateway', 'Cash On Delivery (COD)');
                 formData.append('woo_paymentgateway_id', 'cod');
                 formData.append('set_paid', 'false');
-                formData.append('woo_shipping_method', 'Pos Laju');
+                formData.append('woo_shipping_method', 'DHL');
                 formData.append('currency', 'MYR');
                 formData.append('status', 'processing');
                 formData.append('products_info[0][sku]', 'BUKUQADASOLAT');
@@ -171,7 +172,7 @@ ${customer.state}`;
             tasks.push(sendEmail({
                 toEmail: customer.email,
                 toName: customer.name,
-                subject: `Order COD Termaklum #${refId}`,
+                subject: `✅ Tempahan Diterima - Panduan Qada Solat`,
                 html: emailHtml
             }));
 

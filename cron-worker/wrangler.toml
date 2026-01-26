@@ -1,0 +1,16 @@
+name = "qadasolat-cron-worker"
+main = "src/index.ts"
+compatibility_date = "2024-04-01"
+
+# Enable Cron Triggers (Hourly)
+[triggers]
+crons = ["0 * * * *"]
+
+# Secrets (will be uploaded via wrangler secret put)
+# NEXT_PUBLIC_POCKETBASE_URL
+# POCKETBASE_ADMIN_EMAIL
+# POCKETBASE_ADMIN_PASSWORD
+# WAHA_ENDPOINT
+# WAHA_API_KEY
+# MAILERSEND_API_KEY
+# MAILERSEND_SENDER_EMAIL

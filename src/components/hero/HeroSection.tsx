@@ -153,6 +153,7 @@ export default function HeroSection() {
                                     Edisi Terkini 2026
                                 </span>
                                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] md:leading-tight font-serif tracking-tight text-white drop-shadow-lg text-balance">
+                                    Panduan Qadha Solat: <br className="hidden md:block" />
                                     Selesaikan Hutang Solat <br className="hidden md:block" />
                                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-400 filter drop-shadow-md">
                                         Dengan Tenang & Yakin

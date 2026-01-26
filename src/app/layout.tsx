@@ -81,8 +81,52 @@ export default function RootLayout({
         }
       },
       {
+        "@type": "Organization",
+        "name": "Galeri Mukmin",
+        "url": "https://qadasolat.my",
+        "logo": "https://qadasolat.my/logo.png",
+        "sameAs": [
+          "https://www.facebook.com/galerimukmin"
+        ]
+      },
+      {
+        "@type": "Article",
+        "headline": "Panduan Qadha Solat: Cara Ganti Solat Yang Tertinggal Lama",
+        "image": "https://qadasolat.my/bukuqadhasolat.png",
+        "datePublished": "2024-01-01T08:00:00+08:00",
+        "dateModified": new Date().toISOString(),
+        "author": {
+          "@type": "Organization",
+          "name": "Galeri Mukmin"
+        }
+      },
+      {
         "@type": "FAQPage",
         "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Apa itu Qadha Solat? (Penting)",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Qadha solat bermaksud menggantikan solat fardhu yang ditinggalkan (sama ada sengaja atau tidak sengaja) selepas berlalunya waktu solat tersebut. Ia berbeza dengan Solat Jamak/Qasar."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Wajibkah Qadha Solat yang tertinggal lama?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Mengikut Jumhur Ulama (Majoriti) termasuk Mazhab Syafi'i, Maliki, Hanafi, dan Hanbali - WAJIB mengqadha semua solat fardhu yang ditinggalkan walaupun ia berlaku bertahun-tahun lamanya."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Bagaimana cara kira jumlah solat yang tertinggal?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Dalam buku ini, kami sediakan 'Sistem Log Mufashil' dan formula mudah untuk anda anggar jumlah tahun yang tertinggal. Cukup sekadar anggaran yakin (Ghalib ad-Zhan)."
+            }
+          },
           {
             "@type": "Question",
             "name": "Boleh bayar masa barang sampai (COD)?",
