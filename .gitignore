@@ -48,4 +48,3 @@ public/assets/docs/*.pdf
 # Build outputs
 .open-next/
 wrangler.jsonc
-open-next.config.ts
