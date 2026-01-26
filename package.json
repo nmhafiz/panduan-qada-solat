@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "next:build": "next build",
-    "pages:build": "npx @cloudflare/next-on-pages@1",
+    "pages:build": "npx @opennextjs/cloudflare",
     "start": "next start",
     "lint": "eslint"
   },
