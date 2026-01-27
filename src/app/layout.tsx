@@ -21,6 +21,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
   openGraph: {
     title: `Panduan Qadha Solat ${new Date().getFullYear()}`,
     description: "Jangan bertaruh ajal. Selesaikan hutang solat dengan panduan yang betul dan mudah.",
@@ -28,10 +33,10 @@ export const metadata: Metadata = {
     siteName: 'QadhaSolat.my',
     images: [
       {
-        url: '/bukuqadhasolat.png',
-        width: 800,
-        height: 600,
-        alt: 'Buku Panduan Qadha Solat',
+        url: '/opengraph.png',
+        width: 1200,
+        height: 630,
+        alt: 'Panduan Qadha Solat',
       },
     ],
     locale: 'ms_MY',
@@ -41,10 +46,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: `Panduan Qadha Solat ${new Date().getFullYear()}`,
     description: "Selesaikan hutang solat dengan panduan yang betul dan mudah.",
-    images: ['/bukuqadhasolat.png'],
+    images: ['/opengraph.png'],
   },
   keywords: ["qadha solat", "ganti solat", "buku solat", "panduan solat mufashil", "galeri mukmin", "cara qadha solat lama", "jadual qadha solat"],
-  manifest: '/manifest.json',
 };
 
 export const viewport = {
